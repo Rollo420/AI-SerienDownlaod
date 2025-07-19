@@ -74,7 +74,7 @@ def merge_ts_files(ts_file_paths, output_filepath, ffmpeg_exec_path):
             "-safe", "0",
             "-i", temp_input_file,
             "-c", "copy",
-            "-bsf:a", "aac_adtstoasc", # Wichtig für AAC-Audio in TS-Streams
+            "-bsf:a", "aac_adtstoasc",
             output_filepath
         ]
         print(f"Führe FFmpeg-Befehl aus: {' '.join(command)}")
@@ -362,7 +362,7 @@ def stream_episode(driver, url): # output_dir wird jetzt in main gehandhabt
 
     if not ts_urls:
         print("KEINE TS-URLs gefunden. Die Seite hat möglicherweise keine TS-Streams oder ein Problem ist aufgetreten.")
-        return False, episode_title, [], "", "" # Rückgabe von leeren Listen/Strings
+        return False, episode_title, [] # Rückgabe von False und leere Liste
 
     sorted_ts_urls = sorted(list(ts_urls))
     
@@ -437,8 +437,6 @@ def main():
 
             # 3. Definiere den finalen Video-Pfad
             final_output_video_path = os.path.join(episode_output_dir, f"{cleaned_episode_title}.mp4")
-            # get_unique_filename ist hier optional, da episode_output_dir bereits unique ist,
-            # aber es schadet nicht, wenn der Dateiname selbst auch unique sein muss (z.B. wenn mehrere Downloads in denselben Episode-Ordner gingen)
             final_output_video_path = get_unique_filename(final_output_video_path.rsplit('.', 1)[0], "mp4")
 
 
@@ -469,7 +467,6 @@ def main():
                 ffmpeg_executable = find_ffmpeg_executable()
                 if ffmpeg_executable:
                     print("Starte Zusammenführung der TS-Dateien...")
-                    # Sicherstellen, dass die Dateien in der korrekten Reihenfolge für FFmpeg sind
                     downloaded_ts_files.sort()
                     if merge_ts_files(downloaded_ts_files, final_output_video_path, ffmpeg_executable):
                         print("Bereinige temporäre TS-Dateien...")

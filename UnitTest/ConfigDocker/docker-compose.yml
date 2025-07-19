@@ -1,0 +1,50 @@
+version: "3.8" # Empfohlene Docker Compose Version
+
+services:
+  # 1. Der Selenium Standalone Container mit Chromium
+  selenium-chromium-container:
+    build:
+      context: ./docker/selenium-chrome # Pfad zum Dockerfile für Selenium (relativ zu docker-compose.yml)
+      dockerfile: Dockerfile
+    container_name: selenium-chromium-container
+    restart: unless-stopped
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: "4g"
+    environment:
+      - SE_VNC_PASSWORD=secret
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+      - SE_START_XVFB=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # 2. Dein Python-Anwendungs-Container
+  video-downloader-app:
+    # Der Build-Kontext ist der Projekt-Root (ConfigDocker/)
+    build:
+      context: . # Kontext ist der Projekt-Root (der Ordner, in dem docker-compose.yml liegt)
+      dockerfile: ./docker/python-app/Dockerfile # Expliziter Pfad zum Dockerfile innerhalb des Projekt-Roots
+    image: seriendownloader-app:latest
+    container_name: seriendownloader-app
+
+    volumes:
+      # Mountet den 'downloads'-Ordner aus dem Projekt-Root (ConfigDocker/)
+      # nach /app/Folgen im Container.
+      - ./downloads:/app/Folgen # Pfad relativ zu docker-compose.yml
+
+    depends_on:
+      - selenium-chromium-container
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SELENIUM_HUB_URL=http://selenium-chromium-container:4444/wd/hub 
+
+    # Der Befehl, der beim Start des Containers ausgeführt wird.
+    # downloadManager.py wurde nach /app kopiert.
+    command: ["python", "/app/downloadManager.py", "http://186.2.175.5/redirect/18402708", "/app/Folgen"]
