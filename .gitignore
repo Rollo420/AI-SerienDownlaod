@@ -1,3 +1,11 @@
+#Project files 
+*.ts
+*.mp4
+ffmpeg_tools/
+downloaded_segments_temp/
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

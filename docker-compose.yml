@@ -1,0 +1,29 @@
+services:
+  video-downloader:
+    build: . # Dockerfile im aktuellen Verzeichnis verwenden
+    image: seriendownloader-firefox:latest # Der Name deines Docker-Images
+    container_name: seriendownloader-firefox # Optional: Einen festen Namen für den Container vergeben
+
+    # Ressourcen-Limits und shm_size definieren
+    deploy:
+      resources:
+        limits:
+          memory: 4g  # Maximal 4 GB RAM
+          cpus: '2'   # Maximal 2 CPU-Kerne (kann auch '1.5' für 1.5 Kerne sein)
+
+    # WICHTIG: Erhöhung des Shared Memory für den Browser
+    shm_size: '2g' # 2 GB Shared Memory, wichtig für Firefox/Chrome im Headless-Modus bei Video
+
+    # Optional: Ein Volume mounten, um die heruntergeladenen Videos auf deinem Host zu speichern
+    volumes:
+      - ./downloads:/app/ausgabe # Links: Pfad auf deinem Host, Rechts: Pfad im Container
+
+    # Das Kommando, das im Container ausgeführt wird, wenn er startet
+    # Überschreibt den CMD-Befehl im Dockerfile, kann aber weggelassen werden,
+    # wenn der CMD im Dockerfile passt. Hier zur Verdeutlichung.
+    command: ["python", "downloadManager.py", "https://186.2.175.5/redirect/18366862", "/app/ausgabe"]
+
+    # Optional: Umgebungsvariablen für das Skript, falls du welche brauchst
+    environment:
+      - PYTHONUNBUFFERED=1 # Sorgt dafür, dass Python-Ausgaben sofort erscheinen
+      # - SOME_OTHER_VAR=value
