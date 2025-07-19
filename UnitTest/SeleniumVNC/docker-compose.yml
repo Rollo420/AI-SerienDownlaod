@@ -1,0 +1,49 @@
+
+services:
+  # 1. Der Selenium Standalone Container mit Chromium (nach deiner Vorgabe)
+  selenium-chromium-container:
+    image: selenium/standalone-chromium:latest # Empfehlung: Spezifischen Tag statt 'latest' verwenden (z.B. 125.0-20240522)
+    container_name: selenium-chromium-container
+    restart: unless-stopped # Stellt sicher, dass der Container bei einem Neustart des Docker-Daemons neu startet
+    ports:
+      - "4444:4444" # Selenium WebDriver API Endpunkt
+      - "7900:7900" # VNC Viewer (noVNC Web-Interface für Debugging)
+    shm_size: "4g" # Kritisch für die Browserstabilität, um Abstürze zu vermeiden
+    environment:
+      - SE_VNC_PASSWORD=secret # Standardpasswort für VNC (für Debugging), unbedingt für Produktionsumgebungen ändern
+      - DISPLAY_WIDTH=1920 # Setzt die Breite des virtuellen Displays für VNC
+      - DISPLAY_HEIGHT=1080 # Setzt die Höhe des virtuellen Displays für VNC
+      - SE_START_XVFB=true # Essentiell für --headless=new in modernen Chromium/Chrome-Versionen
+      # - SE_START_VNC=true # Normalerweise standardmäßig auf 'true' für Standalone-Images, explizit setzen falls nötig
+      # Optionale Selenium Node Konfigurationsvariablen (auskommentiert, da nicht explizit angefordert)
+      # - SE_NODE_MAX_SESSIONS=1
+      # - SE_NODE_SESSION_TIMEOUT=300
+    healthcheck: # Überprüft die Verfügbarkeit des Selenium Grid
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"] # Überprüft den Status des Selenium Hubs
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # 2. Dein Python-Anwendungs-Container
+  video-downloader-placeholder:
+    build: 
+      context: ./app # Der Build-Kontext ist der 'app'-Ordner
+      dockerfile: Dockerfile # Das Dockerfile heißt 'Dockerfile' und liegt im Kontext-Ordner
+    image: seriendownloader-app:latest 
+    container_name: seriendownloader-app-placeholder
+
+    volumes:
+      - ./downloads:/app/Folgen # Hier bleibt es gleich, da /app/Folgen der Zielpfad im Container ist
+
+    depends_on:
+      - selenium-chromium-container # Abhängigkeit auf den neuen Chromium-Dienst
+
+    environment:
+      - PYTHONUNBUFFERED=1 # Wichtig für Python-Logs in Echtzeit
+      # Die URL des Selenium Hubs im Docker-Netzwerk
+      # Der Service-Name 'selenium-chromium-container' wird als Hostname aufgelöst
+      - SELENIUM_HUB_URL=http://selenium-chromium-container:4444/wd/hub 
+
+    # Der Befehl, der im Container ausgeführt wird (dein Python-Skript)
+    command: ["python", "downloadManager.py", "http://186.2.175.5/redirect/18402708", "/app/Folgen"]

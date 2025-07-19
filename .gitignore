@@ -1,6 +1,7 @@
 #Project files 
 *.ts
 *.mp4
+*.xpi
 ffmpeg_tools/
 downloaded_segments_temp/
 

@@ -1,29 +1,33 @@
 services:
   video-downloader:
-    build: . # Dockerfile im aktuellen Verzeichnis verwenden
-    image: seriendownloader-firefox:latest # Der Name deines Docker-Images
-    container_name: seriendownloader-firefox # Optional: Einen festen Namen für den Container vergeben
+    # 'build: .' weist Docker Compose an, das Dockerfile im aktuellen Verzeichnis zu verwenden
+    build: . 
+    # Der Name des Images, das gebaut wird.
+    image: seriendownloader-chromium:latest 
+    # Optional: Ein fester Name für deinen Container.
+    container_name: seriendownloader 
 
-    # Ressourcen-Limits und shm_size definieren
+    # --- Ressourcen-Limits für den Container ---
+    # Dies ist wichtig für Performance und Stabilität.
     deploy:
       resources:
         limits:
           memory: 4g  # Maximal 4 GB RAM
-          cpus: '2'   # Maximal 2 CPU-Kerne (kann auch '1.5' für 1.5 Kerne sein)
+          cpus: '2'   # 2 CPU-Kerne
 
-    # WICHTIG: Erhöhung des Shared Memory für den Browser
-    shm_size: '2g' # 2 GB Shared Memory, wichtig für Firefox/Chrome im Headless-Modus bei Video
+    # --- Shared Memory Größe erhöhen ---
+    # Sehr wichtig für Browser in Headless-Umgebungen.
+    shm_size: '2g' # 2 GB Shared Memory
 
-    # Optional: Ein Volume mounten, um die heruntergeladenen Videos auf deinem Host zu speichern
+    # --- Volume Mapping für persistente Downloads ---
+    # Downloads aus dem Container werden auf deinem Host-System gespeichert.
+    # Erstelle den Ordner `./downloads` auf deinem Host-System.
     volumes:
-      - ./downloads:/app/ausgabe # Links: Pfad auf deinem Host, Rechts: Pfad im Container
+      - ./downloads:/app/ausgabe 
 
-    # Das Kommando, das im Container ausgeführt wird, wenn er startet
-    # Überschreibt den CMD-Befehl im Dockerfile, kann aber weggelassen werden,
-    # wenn der CMD im Dockerfile passt. Hier zur Verdeutlichung.
-    command: ["python", "downloadManager.py", "https://186.2.175.5/redirect/18366862", "/app/ausgabe"]
+    # Der Befehl, der im Container ausgeführt wird (passt zum CMD im Dockerfile)
+    command: ["xvfb-run", "--auto-display", "--server-num=1", "--server-args='-screen 0 1920x1080x24'", "python", "downloadManager.py", "https://186.2.175.5/redirect/18366862", "/app/ausgabe"]
 
-    # Optional: Umgebungsvariablen für das Skript, falls du welche brauchst
+    # Optional: Umgebungsvariablen können hier gesetzt werden.
     environment:
-      - PYTHONUNBUFFERED=1 # Sorgt dafür, dass Python-Ausgaben sofort erscheinen
-      # - SOME_OTHER_VAR=value
+      - PYTHONUNBUFFERED=1

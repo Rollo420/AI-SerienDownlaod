@@ -1,65 +1,76 @@
-# Verwende ein schlankes Python-Image als Basis
-FROM python:3.12-slim
+# Verwende ein Ubuntu 24.04 LTS-Image als Basis
+FROM ubuntu:24.04
 
 # Setze das Arbeitsverzeichnis im Container
 WORKDIR /app
 
-# Installiere Systemabhängigkeiten für Firefox, GeckoDriver und FFmpeg.
-# `--no-install-recommends` hilft, die Image-Größe klein zu halten.
-# `xvfb` ist eine virtuelle Framebuffer-Anzeige, die oft für Headless-Browser in Containern nützlich ist.
+# Upgrade system und installiere allgemeine Tools, Python, pip
+# Installiere auch `unzip` (für ChromeDriver, falls manuell heruntergeladen) und `xvfb` für Headless
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    firefox-esr \
+    build-essential \
+    software-properties-common \
+    python3 \
+    python3-pip \
+    python3-venv \
     wget \
     tar \
+    unzip \
     ffmpeg \
     xvfb \
-    # Bibliotheken, die für Firefox im Headless-Modus benötigt werden
-    libgtk-3-0 \
+    # Chromium und Chrome WebDriver installieren
+    # `chromium-browser` und `chromium-chromedriver` sind die richtigen Pakete für Ubuntu 24.04
+    chromium-browser \
+    chromium-chromedriver \
+    # Umfassende Liste von Bibliotheken, die für Headless Chrome/Chromium benötigt werden
+    # Angepasst an Paketnamen von Ubuntu 24.04 LTS (mit `t64`-Suffixen)
+    libgtk-3-0t64 \
     libdbus-glib-1-2 \
     libx11-xcb1 \
     libdbus-1-3 \
-    libxt6 \
+    libxt6t64 \
     libxcomposite1 \
     libxdamage1 \
     libxrandr2 \
-    libasound2 \
+    libasound2t64 \
     libpulse0 \
-    # Bereinige den APT-Cache, um die Image-Größe weiter zu reduzieren
+    libfontconfig1 \
+    libfreetype6 \
+    libxkbcommon0 \
+    libnss3 \
+    libxss1 \
+    libgbm1 \
+    libu2f-udev \
+    libvulkan1 \
+    libglib2.0-0t64 \
+    libnspr4 \
+    libayatana-appindicator1 \
+    libcurl4 \
+    libexpat1 \
+    libsecret-1-0t64 \
+    libssl-dev \
+    libunwind8 \
+    fonts-liberation \
+    xdg-utils \
+    # Bereinige den APT-Cache, um die Image-Größe zu reduzieren
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Installiere GeckoDriver manuell.
-# HINWEIS: Dein Python-Skript verwendet `webdriver_manager.firefox.GeckoDriverManager().install()`.
-# Wenn du dich ausschließlich auf `webdriver_manager` verlassen möchtest,
-# könntest du diesen Block entfernen. Eine manuelle Installation im Dockerfile
-# kann jedoch für eine konsistente Treiberversion im Container sorgen.
-ENV GECKODRIVER_VERSION="v0.36.0"
-ENV GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz"
+# Stelle sicher, dass `google-chrome` und `chromedriver` im PATH sind.
+# `chromium-browser` wird oft mit einem Symlink zu `google-chrome` erwartet.
+# `chromium-chromedriver` sollte den WebDriver in `/usr/lib/chromium-browser/chromedriver` platzieren.
+# Wir erstellen hier vorsichtshalber zusätzliche Symlinks.
+RUN ln -s /usr/bin/chromium-browser /usr/bin/google-chrome || true && \
+    ln -s /usr/lib/chromium-browser/chromedriver /usr/local/bin/chromedriver || true
 
-RUN wget -q ${GECKODRIVER_URL} \
-    && tar -xzf geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz -C /usr/local/bin/ \
-    && chmod +x /usr/local/bin/geckodriver \
-    && rm geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
-
-# Bereite den Adblocker (uBlock Origin) vor.
-# Das Python-Skript wird prüfen, ob die Datei vorhanden ist, bevor es sie erneut herunterlädt.
-ENV UBLOCK_XPI_URL="https://addons.mozilla.org/firefox/downloads/file/4216633/ublock_origin-1.55.0.xpi"
-ENV UBLOCK_XPI_FILE="ublock_origin.xpi"
-
-# Die Datei wird direkt in /app heruntergeladen, daher ist kein 'mv' mehr nötig.
-RUN wget -q -O ${UBLOCK_XPI_FILE} ${UBLOCK_XPI_URL}
-
-# Installiere Python-Abhängigkeiten
+# Python-Abhängigkeiten aus requirements.txt installieren
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Kopiere deinen Python-Code in den Container
-# Stelle sicher, dass dein Hauptskript "downloadManager.py" heißt oder passe den CMD-Befehl an.
 COPY . .
 
-# Optional: Umgebungsvariable, um Python-Ausgaben direkt anzuzeigen
+# Optional: Umgebungsvariable, um Python-Ausgaben sofort anzuzeigen
 ENV PYTHONUNBUFFERED=1
 
 # Standardbefehl zum Starten deines Python-Skripts.
-# Die URL und der Zielpfad werden als Argumente übergeben.
-# RAM- und CPU-Limits werden beim Ausführen des Containers festgelegt, nicht hier.
-CMD ["python", "downloadManager.py", "https://186.2.175.5/redirect/18366862", "/app/ausgabe"]
+# `xvfb-run` startet einen virtuellen Display-Server, der für Headless-Browser notwendig ist.
+CMD ["xvfb-run", "--auto-display", "--server-num=1", "--server-args='-screen 0 1920x1080x24'", "python", "downloadManager.py", "https://186.2.175.5/redirect/18366862", "/app/ausgabe"]
