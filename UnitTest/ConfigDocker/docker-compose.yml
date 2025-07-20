@@ -88,16 +88,64 @@ services:
   #       dns:
   #         - 172.20.0.100
 
+  
+  #  pihole:
+  #  # Verwendet das offizielle Pi-hole Docker-Image
+  #  image: pihole/pihole:latest
+  #  # Setzt einen eindeutigen Namen für den Container
+  #  container_name: pihole
+  #  hostname: pihole
+  #  # Port-Zuweisungen: <Host-Port>:<Container-Port>
+  #  ports:
+  #    # Port für den DNS-Dienst (TCP und UDP)
+  #    - "53:53/tcp"
+  #    - "53:53/udp"
+  #    # Zugriff über: http://<Ihre-Server-IP>:8080/admin
+  #    - "8080:80/tcp"
+  #  environment:
+  #    # Zeitzone für korrekte Log-Eintrüge
+  #    TZ: 'Europe/Berlin'
+  #    # WICHTIG: Setzen Sie hier Ihr eigenes, sicheres Passwort für die Weboberfläche!
+  #    # Lassen Sie das Feld leer, um kein Passwort zu setzen (nicht empfohlen).
+  #    WEBPASSWORD: 'password123' # Ändern Sie dies zu einem sicheren Passwort!
+  #  # Volumes für persistente Speicherung der Pi-hole Konfiguration.
+  #  # So bleiben Ihre Einstellungen auch nach einem Neustart des Containers erhalten.
+  #  volumes:
+  #    - './etc-pihole/:/etc/pihole/'
+  #    - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+  #  # Notwendige Berechtigung für Pi-hole, um Netzwerkeinstellungen zu verwalten
+  #  cap_add:
+  #    - NET_ADMIN
+  #  # Startet den Container automatisch neu, es sei denn, er wird manuell gestoppt.
+  #  restart: unless-stopped
+  #  networks:
+  #    pihole_network:
+  #      ipv4_address: 172.20.0.100 # Feste IP-Adresse für Pi-hole im Netzwerk
+  #  healthcheck: # Healthcheck für Pi-hole
+  #    test: # Überprüft den DNS-Dienststatus von Pi-hole
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 5
+  #    start_period: 10s
+
+networks:
+  pihole_network:
+    driver: bridge
+    ipam:
+      config:
+        # Definiert den IP-Adressbereich für dieses Netzwerk
+        - subnet: 172.20.0.0/24
+
   # Dein Python-Anwendungs-Container
   video-downloader-app:
     build:
-      context:. # Der Build-Kontext ist das Verzeichnis, in dem sich die docker-compose.yml befindet.
-      dockerfile:./docker/python-app/Dockerfile # Expliziter Pfad zum Dockerfile relativ zum Kontext
+      context: . # Der Build-Kontext ist das Verzeichnis, in dem sich die docker-compose.yml befindet.
+      dockerfile: ./docker/python-app/Dockerfile # Expliziter Pfad zum Dockerfile relativ zum Kontext
     image: seriendownloader-app:latest
     container_name: seriendownloader-app
     volumes:
-      -./downloads:/app/Folgen # Mountet den 'downloads'-Ordner vom Host in den Container
-      -./app:/app/src # Mountet den 'app' Ordner, um Skripte direkt zu synchronisieren
+      - ./downloads:/app/Folgen # Mountet den 'downloads'-Ordner vom Host in den Container
+      - ./app:/app/src # Mountet den 'app' Ordner, um Skripte direkt zu synchronisieren
     
     depends_on:
       selenium-hub:
