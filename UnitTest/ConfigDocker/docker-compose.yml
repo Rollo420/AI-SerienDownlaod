@@ -1,50 +1,118 @@
-version: "3.8" # Empfohlene Docker Compose Version
-
 services:
-  # 1. Der Selenium Standalone Container mit Chromium
-  selenium-chromium-container:
-    build:
-      context: ./docker/selenium-chrome # Pfad zum Dockerfile für Selenium (relativ zu docker-compose.yml)
-      dockerfile: Dockerfile
-    container_name: selenium-chromium-container
-    restart: unless-stopped
+  # Selenium Grid Hub
+  selenium-hub:
+    image: selenium/hub:latest # Verwende den offiziellen Selenium Hub Image
+    container_name: selenium-hub
     ports:
-      - "4444:4444"
-      - "7900:7900"
-    shm_size: "4g"
-    environment:
-      - SE_VNC_PASSWORD=secret
-      - DISPLAY_WIDTH=1920
-      - DISPLAY_HEIGHT=1080
-      - SE_START_XVFB=true
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - "4444:4444" # Standardport für den Hub, zugänglich vom Host
+    healthcheck: # Überprüft die Verfügbarkeit des Selenium Hubs
+      test: #
+      interval: 10s
+      timeout: 5s
+      retries: 5
       start_period: 20s
+    networks:
+      - pihole_network # Verbindet den Hub mit dem Pi-hole-Netzwerk
 
-  # 2. Dein Python-Anwendungs-Container
+  # Selenium Grid Chrome Node 1
+  chrome-node-1:
+    image: selenium/node-chromium:latest # Verwende den offiziellen Chrome Node Image
+    container_name: chrome-node-1
+    depends_on:
+      selenium-hub:
+        condition: service_healthy # Stellt sicher, dass der Hub bereit ist, bevor der Node startet
+      pihole:
+        condition: service_healthy # Stellt sicher, dass Pi-hole bereit ist
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub # Hostname des Hubs im Docker-Netzwerk
+      - SE_EVENT_BUS_PUBLISH_PORT=4442 # Port für die Veröffentlichung von Events
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443 # Port für das Abonnieren von Events
+      - SE_NODE_MAX_SESSIONS=4 # WICHTIG: Erlaubt diesem Node, 4 Chrome-Instanzen parallel zu starten! [1]
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true # Erzwingt dieses Limit [1]
+      - SE_VNC_ENABLED=true # Aktiviert VNC für diesen Node [2]
+      - SE_VNC_PORT=7900 # Standard VNC Port im Container (für node-chromium)
+      - SE_VNC_NO_PASSWORD=false # VNC mit Passwortschutz [2]
+      - SE_VNC_PASSWORD=secret # Standardpasswort für VNC, unbedingt ändern! [2, 3]
+      - DISPLAY_WIDTH=1920 # Setzt die Breite des virtuellen Displays für VNC [4, 5]
+      - DISPLAY_HEIGHT=1080 # Setzt die Höhe des virtuellen Displays für VNC [4, 5]
+      - SE_START_XVFB=true # Essentiell für --headless=new in modernen Chromium/Chrome-Versionen [2]
+    ports:
+      - "5900:7900" # Exponiert VNC-Port des ersten Nodes auf Host-Port 5900. Intern ist es 7900. [6, 7, 3, 8, 9, 5, 10, 11]
+    shm_size: "4g" # Erhöhe den Shared Memory für den Browser, kritisch für Stabilität
+    healthcheck: # Überprüft die Verfügbarkeit des Node
+      test: # Node-Status-Endpoint (Standardport für Node ist 5555)
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      pihole_network:
+        # Konfiguriert den Node, um Pi-hole als DNS-Server zu nutzen
+        dns:
+          - 172.20.0.100 # IP-Adresse des Pi-hole Containers im pihole_network
+
+  # Optional: Ein weiterer Chrome Node für noch mehr Parallelität
+  # Du kannst hier weitere chrome-node-X Dienste hinzufügen, mit jeweils einem einzigartigen Host-Port für VNC
+  # chrome-node-2:
+  #   image: selenium/node-chromium:latest
+  #   container_name: chrome-node-2
+  #   depends_on:
+  #     selenium-hub:
+  #       condition: service_healthy
+  #     pihole:
+  #       condition: service_healthy
+  #   environment:
+  #     - SE_EVENT_BUS_HOST=selenium-hub
+  #     - SE_EVENT_BUS_PUBLISH_PORT=4442
+  #     - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  #     - SE_NODE_MAX_SESSIONS=4
+  #     - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+  #     - SE_VNC_ENABLED=true
+  #     - SE_VNC_PORT=7900
+  #     - SE_VNC_NO_PASSWORD=false
+  #     - SE_VNC_PASSWORD=secret
+  #     - DISPLAY_WIDTH=1920
+  #     - DISPLAY_HEIGHT=1080
+  #     - SE_START_XVFB=true
+  #   ports:
+  #     - "5901:7900" # Exponiert VNC-Port des zweiten Nodes auf Host-Port 5901
+  #   shm_size: "4g"
+  #   healthcheck:
+  #     test:
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 20s
+  #   networks:
+  #     pihole_network:
+  #       dns:
+  #         - 172.20.0.100
+
+  # Dein Python-Anwendungs-Container
   video-downloader-app:
-    # Der Build-Kontext ist der Projekt-Root (ConfigDocker/)
     build:
-      context: . # Kontext ist der Projekt-Root (der Ordner, in dem docker-compose.yml liegt)
-      dockerfile: ./docker/python-app/Dockerfile # Expliziter Pfad zum Dockerfile innerhalb des Projekt-Roots
+      context:. # Der Build-Kontext ist das Verzeichnis, in dem sich die docker-compose.yml befindet.
+      dockerfile:./docker/python-app/Dockerfile # Expliziter Pfad zum Dockerfile relativ zum Kontext
     image: seriendownloader-app:latest
     container_name: seriendownloader-app
-
     volumes:
-      # Mountet den 'downloads'-Ordner aus dem Projekt-Root (ConfigDocker/)
-      # nach /app/Folgen im Container.
-      - ./downloads:/app/Folgen # Pfad relativ zu docker-compose.yml
-
+      -./downloads:/app/Folgen # Mountet den 'downloads'-Ordner vom Host in den Container
+      -./app:/app/src # Mountet den 'app' Ordner, um Skripte direkt zu synchronisieren
+    
     depends_on:
-      - selenium-chromium-container
-
+      selenium-hub:
+        condition: service_healthy # Stellt sicher, dass der Hub bereit ist, bevor die App startet
+      pihole:
+        condition: service_healthy # Stellt sicher, dass Pi-hole bereit ist
+    
     environment:
-      - PYTHONUNBUFFERED=1
-      - SELENIUM_HUB_URL=http://selenium-chromium-container:4444/wd/hub 
-
-    # Der Befehl, der beim Start des Containers ausgeführt wird.
-    # downloadManager.py wurde nach /app kopiert.
-    command: ["python", "/app/downloadManager.py", "http://186.2.175.5/redirect/18402708", "/app/Folgen"]
+      - PYTHONUNBUFFERED=1 # Stellt sicher, dass Python-Ausgaben sofort erscheinen
+      - SELENIUM_HUB_URL=http://selenium-hub:4444/wd/hub # Wichtig: Kommunikation über den Dienstnamen des Hubs [12, 9]
+    
+    # Der Container soll einfach laufen, damit du später das Python-Skript darin ausführen kannst
+    command: ["python", "/app/downloadManager.py", "http://186.2.175.5/redirect/18421293", "/app/Folgen", '--no-headless']
+    networks:
+      pihole_network:
+        # Konfiguriert die App, um Pi-hole als DNS-Server zu nutzen
+        dns:
+          - 172.20.0.100 # IP-Adresse des Pi-hole Containers im pihole_network

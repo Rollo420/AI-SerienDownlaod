@@ -1,0 +1,1 @@
+[VNC VIEW in WEB](http://localhost:7900/?autoconnect=1&resize=scale&password=secret)
