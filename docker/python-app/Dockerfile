@@ -1,0 +1,27 @@
+# Verwende ein spezifisches Debian 12 (Bookworm) basiertes Python-Image
+FROM python:3.9-slim
+
+# Setze das Arbeitsverzeichnis im Container
+WORKDIR /app
+
+# Installiere Systemabhängigkeiten für FFmpeg und andere notwendige Pakete
+# Nur die absolut notwendigen Pakete für das Python-Skript (FFmpeg, git, build-essential, wget, tar, unzip)
+# Alle Browser- und GUI-bezogenen Pakete wurden entfernt, da sie in den Selenium Node-Containern sind.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    git \
+    build-essential \
+    ffmpeg \
+    wget \
+    tar \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Kopiere die requirements.txt und installiere Python-Abhängigkeiten
+# Der Pfad ist relativ zum Build-Kontext (dem Stammverzeichnis des Projekts)
+COPY ./UnitTest/ConfigDocker/docker/python-app/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Kein COPY für src, da per Volume gemountet
+# Standard CMD (wird von docker-compose.yml überschrieben)
+CMD ["python", "/app/src/downloadManager.py", "https://jilliandescribecompany.com/e/1ueyzv2qii6r", "/app/Folgen", "--no-headless"]

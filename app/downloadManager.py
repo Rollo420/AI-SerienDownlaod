@@ -500,16 +500,10 @@ def stream_episode(driver, url):
         # Iteriere über die priorisierte Liste der Selektoren
         for selector in video_start_selectors_prioritized:
             current_time, duration, paused = get_current_video_progress(driver)
-            
-            # Überprüfe hier, ob das Video bereits läuft, bevor weitere Klickversuche unternommen werden
             if duration > 0 and current_time > 0.1 and not paused:
                 video_started_successfully = True
                 log(f"Video läuft bereits nach initialen Bereinigungen. Kein weiterer Startversuch nötig.")
                 break # Video läuft, Schleife beenden
-
-            # Zusätzlicher Aufruf von close_overlays_and_iframes vor jedem Selektor-Versuch
-            # Dies stellt sicher, dass neue Pop-ups, die während der Wartezeit aufgetaucht sind, geschlossen werden.
-            close_overlays_and_iframes(driver) 
 
             for attempt_num in range(num_attempts_per_selector):
                 log(f"-> Versuche mit Selektor '{selector}' (Versuch {attempt_num + 1}/{num_attempts_per_selector})...")
@@ -540,8 +534,6 @@ def stream_episode(driver, url):
                             break # Erfolgreich, innere Schleife beenden
                         elif paused and duration > 0:
                             log(f"Video pausiert nach JS-play() bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play() oder nächsten Selektor.")
-                        elif duration == 0: # Fehlerbehebung: Vermeide Division durch Null in Logs
-                            log(f"Video pausiert nach JS-play() bei {current_time:.2f}/Dauer unbekannt. Versuche erneuten JS-play() oder nächsten Selektor.")
                     except Exception as e:
                         log(f"FEHLER beim JS-Startversuch: {e}", "debug") # Debug, da oft nur Video noch nicht da
 
@@ -566,8 +558,6 @@ def stream_episode(driver, url):
                             break # Erfolgreich, innere Schleife beenden
                         elif paused and duration > 0:
                             log(f"Video pausiert nach 'video'-Klick bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play().")
-                        elif duration == 0: # Fehlerbehebung: Vermeide Division durch Null in Logs
-                            log(f"Video pausiert nach 'video'-Klick bei {current_time:.2f}/Dauer unbekannt. Versuche erneuten JS-play().")
                     except (TimeoutException, NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException) as e:
                         log(f"Klick auf 'video'-Selektor nicht möglich/gefunden: {e}", "debug")
                     except Exception as e:
@@ -588,14 +578,13 @@ def stream_episode(driver, url):
                         if duration > 0 and current_time > 0.1 and not paused:
                             log(f"Video erfolgreich über ActionChains auf 'video' gestartet bei {current_time:.2f}/{duration:.2f} Sekunden.")
                             video_started_successfully = True
+                            # Selektor an den Anfang der Liste verschieben (Lernfunktion)
                             if 'ActionChains_video_click' in video_start_selectors_prioritized:
                                 video_start_selectors_prioritized.remove('ActionChains_video_click')
                             video_start_selectors_prioritized.insert(0, 'ActionChains_video_click')
                             break # Erfolgreich, innere Schleife beenden
                         elif paused and duration > 0:
                             log(f"Video pausiert nach ActionChains-Klick bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play().")
-                        elif duration == 0: # Fehlerbehebung: Vermeide Division durch Null in Logs
-                            log(f"Video pausiert nach ActionChains-Klick bei {current_time:.2f}/Dauer unbekannt. Versuche erneuten JS-play().")
                     except (TimeoutException, NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException) as e:
                         log(f"ActionChains-Klick auf 'video'-Selektor nicht möglich/gefunden: {e}", "debug")
                     except Exception as e:
@@ -611,7 +600,7 @@ def stream_episode(driver, url):
                         driver.execute_script("arguments[0].click();", play_button)
                         time.sleep(0.5)
 
-                        # close_overlays_and_iframes(driver) # Dieser Aufruf wird nun am Anfang der Schleife gemacht
+                        # close_overlays_and_iframes(driver) # Nach Klick Popups erneut schließen (kann hier weggelassen werden, da es in der Hauptschleife passiert)
 
                         current_time, duration, paused = get_current_video_progress(driver)
                         if duration > 0 and current_time > 0.1 and not paused:
@@ -635,8 +624,6 @@ def stream_episode(driver, url):
                                     video_start_selectors_prioritized.remove(selector)
                                 video_start_selectors_prioritized.insert(0, selector)
                                 break
-                        elif duration == 0: # Fehlerbehebung: Vermeide Division durch Null in Logs
-                            log(f"Video ist nach Klick auf '{selector}' pausiert bei {current_time:.2f}/Dauer unbekannt. Versuche JS-play().")
 
                     except (TimeoutException, NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException) as e:
                         log(f"Selektor '{selector}' nicht gefunden/klickbar: {e}", "debug")
@@ -649,8 +636,8 @@ def stream_episode(driver, url):
             if video_started_successfully:
                 break # Äußere Schleife beenden, wenn Video gestartet
 
-        # Bereinigung nach jedem Schleifendurchlauf der Selektoren (falls nicht schon durch erfolgreichen Start beendet)
-        # close_overlays_and_iframes(driver) # Dieser Aufruf ist nun am Anfang der for-Schleife für Selektoren
+        # Bereinigung nach jedem Schleifendurchlauf der Selektoren
+        # close_overlays_and_iframes(driver) # Dies kann hier wieder aktiviert werden, wenn nötig, aber es ist bereits in der Haupt-while-Schleife.
 
         if not video_started_successfully:
             time.sleep(1) # Kurze Pause vor der nächsten Iteration des aggressiven Starts
@@ -673,21 +660,18 @@ def stream_episode(driver, url):
     while True:
         current_time, duration, paused = get_current_video_progress(driver)
 
-        # Fehlerbehebung: Passe die Log-Nachrichten an, um Division durch Null zu vermeiden
-        duration_str = f"{duration:.2f}" if duration > 0 else "unbekannt"
-        
         if duration > 0 and current_time >= duration - 3.0:
-            log(f"Video fast am Ende oder beendet: {current_time:.2f}/{duration_str}. Beende Überwachung.")
+            log(f"Video fast am Ende oder beendet: {current_time:.2f}/{duration:.2f}. Beende Überwachung.")
             break
 
         if paused:
-            log(f"Video pausiert bei {current_time:.2f}/{duration_str} Sekunden, versuche es zu starten.")
+            log(f"Video pausiert bei {current_time:.2f}/{duration:.2f} Sekunden, versuche es zu starten.")
             driver.execute_script("document.querySelector('video').play();")
             time.sleep(1)
 
         if current_time == last_current_time and current_time > 0.1:
             if time.time() - stalled_check_time > stalled_timeout:
-                log(f"Video hängt fest bei {current_time:.2f}/{duration_str} Sekunden seit {stalled_timeout} Sekunden. Beende Überwachung.")
+                log(f"Video hängt fest bei {current_time:.2f}/{duration:.2f} Sekunden seit {stalled_timeout} Sekunden. Beende Überwachung.")
                 break
         else:
             stalled_check_time = time.time()
@@ -697,10 +681,6 @@ def stream_episode(driver, url):
         if duration == 0 and time.time() - overall_monitoring_start_time > max_monitoring_time_if_duration_unknown:
             log(f"WARNUNG: Videodauer nicht verfügbar und Überwachung läuft seit über {max_monitoring_time_if_duration_unknown/3600:.1f} Stunden. Beende Überwachung.", "warning")
             break
-        
-        # Zusätzlicher Aufruf von close_overlays_and_iframes während der Überwachung
-        # Dies fängt Pop-ups ab, die während der Videowiedergabe erscheinen könnten.
-        close_overlays_and_iframes(driver)
 
         ts_urls.update(extract_segment_urls_from_performance_logs(driver))
 
