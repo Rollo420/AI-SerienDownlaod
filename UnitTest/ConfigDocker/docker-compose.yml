@@ -45,7 +45,7 @@ services:
     volumes:
       - pihole_config:/etc/pihole/
       - pihole_dnsmasq:/etc/dnsmasq.d/
-      - ./PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
+      - ./docker/PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
     cap_add:
       - NET_ADMIN
     networks:
@@ -80,6 +80,32 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=4
     command: ["python", "/app/src/downloadManager.py", "https://jilliandescribecompany.com/e/1ueyzv2qii6r", "/app/Folgen", "--no-headless"]
+    networks:
+      pihole_network:
+    dns:
+      - 172.20.0.100
+
+  # Dein Python-Anwendungs-Container
+  video-downloader-app02:
+    build:
+      context: /home/woodly/Coding/AI-SerienDownlaod
+      dockerfile: UnitTest/ConfigDocker/docker/python-app/Dockerfile
+    image: seriendownloader-app:latest
+    platform: linux/arm64
+    container_name: seriendownloader-app02
+    volumes:
+      - /home/woodly/Coding/AI-SerienDownlaod/downloads:/app/Folgen
+      - /home/woodly/Coding/AI-SerienDownlaod/UnitTest/ConfigDocker/app:/app/src
+    depends_on:
+      selenium-chromium:
+        condition: service_healthy
+      pihole:
+        condition: service_healthy
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
+      - TS_DOWNLOAD_THREADS=4
+    command: ["python", "/app/src/downloadManager.py", "https://s.to/redirect/18875181", "/app/Folgen", "--no-headless"]
     networks:
       pihole_network:
     dns:
