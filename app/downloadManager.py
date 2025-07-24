@@ -22,17 +22,23 @@ import logging
 # --- Konfiguration ---
 DEFAULT_TIMEOUT = 30 # Timeout für das Warten auf Elemente
 VIDEO_START_TIMEOUT = 15 # Spezifischer Timeout für den Video-Start-Versuch
+LOGFILE_PATH = "/app/Folgen/seriendownloader.log"
+
 
 # --- Logging Setup ---
-LOGFILE_PATH = "/app/Folgen/seriendownloader.log"
+# Sicherstellen, dass das Verzeichnis für die Logdatei existiert
+os.makedirs(os.path.dirname(LOGFILE_PATH), exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
+    # ANGEPASST: Füge %(filename)s:%(lineno)d zum Format hinzu, um Dateiname und Zeilennummer anzuzeigen
+    format="%(asctime)s %(levelname)s %(filename)s:%(lineno)d - %(message)s",
     handlers=[
         logging.FileHandler(LOGFILE_PATH, encoding="utf-8"),
         logging.StreamHandler(sys.stdout)
     ]
 )
+
 logger = logging.getLogger("seriendownloader")
 
 # --- Hilfsfunktionen ---
@@ -89,18 +95,28 @@ def is_valid_ts_file(filepath):
         return False
 
 def merge_ts_files(ts_file_paths, output_filepath, ffmpeg_exec_path):
-    """Führt TS-Dateien mit FFmpeg zusammen."""
+    """Führt TS-Dateien mit FFmpeg zusammen.
+    
+    Die temporäre input.txt-Datei wird im selben Verzeichnis wie die TS-Segmente gespeichert,
+    um Konflikte bei mehreren gleichzeitigen oder aufeinanderfolgenden Sessions zu vermeiden.
+    """
     if not ffmpeg_exec_path:
         log("FEHLER: FFmpeg-Executable nicht gefunden. Kann Dateien nicht zusammenführen.", "error")
         return False
 
+    # Bestimme das Verzeichnis der TS-Dateien.
+    # Wir nehmen an, dass alle TS-Dateien im selben temporären Verzeichnis liegen.
+    # Dies ist der Ordner, in dem auch die input.txt erstellt werden soll.
+    ts_files_directory = os.path.dirname(ts_file_paths[0]) if ts_file_paths else os.path.dirname(output_filepath)
+
     # Erstelle einen einzigartigen temporären Dateinamen für input.txt
     # Dies verhindert Überschreibungen bei mehreren gleichzeitigen oder aufeinanderfolgenden Sessions
-    temp_input_file = get_unique_filename(os.path.join(os.path.dirname(output_filepath), "ffmpeg_input"), "txt")
+    temp_input_file = get_unique_filename(os.path.join(ts_files_directory, "ffmpeg_input"), "txt")
     
     try:
         valid_files = []
         log(f"Erstelle input.txt unter: {temp_input_file}")
+        os.makedirs(ts_files_directory, exist_ok=True) # Sicherstellen, dass der Ordner existiert
         with open(temp_input_file, "w", newline="\n") as f:
             for p in ts_file_paths:
                 abs_path = os.path.abspath(p)
@@ -166,6 +182,7 @@ def merge_ts_files(ts_file_paths, output_filepath, ffmpeg_exec_path):
         # Sicherstellen, dass die temporäre input.txt Datei immer gelöscht wird
         if os.path.exists(temp_input_file):
             os.remove(temp_input_file)
+
 
 
 def get_unique_filename(base_path, extension):
@@ -812,11 +829,17 @@ def main():
                     # Fortschritt in Prozent
                     current_download_count = len(downloaded_ts_files)
                     total_segments = len(sorted_ts_urls)
+                    
                     if total_segments > 0:
                         progress_percent = (current_download_count / total_segments) * 100
-                        # Nur jede 5% oder am Ende des Downloads loggen
-                        if (current_download_count % (total_segments // 20) == 0 and total_segments // 20 > 0) or (current_download_count == total_segments):
-                             log(f"    Heruntergeladen: {current_download_count}/{total_segments} ({progress_percent:.1f}%) Segmente...")
+                        
+                        # Calculate log_interval safely, ensuring it's never zero
+                        # This line was changed to fix the "integer division or modulo by zero" error.
+                        log_interval = max(1, total_segments // 20) 
+                        
+                        # Only every 5% or at the end of the download log
+                        if (current_download_count % log_interval == 0) or (current_download_count == total_segments):
+                            log(f"    Heruntergeladen: {current_download_count}/{total_segments} ({progress_percent:.1f}%) Segmente...")
 
 
             if not downloaded_ts_files:
