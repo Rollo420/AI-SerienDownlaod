@@ -1,5 +1,5 @@
 services:
-  # Selenium Standalone Chromium
+
   selenium-chromium:
     image: selenium/standalone-chromium:latest
     platform: linux/arm64
@@ -15,7 +15,7 @@ services:
       - DISPLAY_WIDTH=1920
       - DISPLAY_HEIGHT=1080
     networks:
-      - pihole_network
+      - pihole02_network
     restart: unless-stopped
     healthcheck: # Überprüft die Verfügbarkeit des Selenium Chromiums
       test: ["CMD", "curl", "-f", "http://localhost:4444"]
@@ -24,14 +24,14 @@ services:
       retries: 5
       start_period: 20s
     dns:
-      - 172.20.0.100
+      - 172.21.0.100
 
   # Pi-hole DNS-Server
-  pihole:
+  pihole02:
     image: pihole/pihole:latest
     platform: linux/arm64
-    container_name: pihole
-    hostname: pihole
+    container_name: pihole02
+    hostname: pihole02
     ports:
       - "5353:53/tcp" # DNS
       - "5353:53/udp" # DNS
@@ -40,15 +40,19 @@ services:
       TZ: 'Europe/Berlin'
       WEBPASSWORD: '0487146094jJ!!'
       DNSMASQ_LISTENING: all
-      PIHOLE_DNS_: 8.8.8.8;8.8.4.4
+      PIHOLE_DNS_: 8.8.8.8;8.8.4.4 # Korrigiert von pihole02_DNS_ zu PIHOLE_DNS_
       PIHOLE_ADLISTS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts https://mirror1.malwaredomains.com/files/justdomains https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt"
     volumes:
+      # Hier sollte ein Volume-Mapping für persistente Pi-hole-Konfigurationen sein,
+      # z.B. - ./docker/PiHole/pihole:/etc/pihole
+      # und - ./docker/PiHole/dnsmasq.d:/etc/dnsmasq.d
+      # Dein aktuelles Mapping für adlists.list ist in Ordnung, aber das könnte erweitert werden.
       - ./docker/PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
     cap_add:
       - NET_ADMIN
     networks:
-      pihole_network:
-        ipv4_address: 172.20.0.100 # Feste IP-Adresse für Pi-hole im Netzwerk
+      pihole02_network:
+        ipv4_address: 172.21.0.100 # Feste IP-Adresse für Pi-hole im Netzwerk
     restart: unless-stopped
     healthcheck: # Überprüft die Verfügbarkeit von Pi-hole
       test: ["CMD", "curl", "-f", "http://localhost/admin"]
@@ -57,71 +61,31 @@ services:
       retries: 5
       start_period: 20s
 
-  # Dein Python-Anwendungs-Container
-  video-downloader-app:
+  episodnemanager:
     build:
-      context: /home/woodly/Coding/AI-SerienDownlaod
-      dockerfile: ./docker/python-app/Dockerfile
-    image: seriendownloader-app:latest
-    platform: linux/arm64
-    container_name: seriendownloader-app
+      context: . # Annahme: Dockerfile liegt im Root-Verzeichnis deines Projekts
+      dockerfile: dockerfile # Dein Dockerfile für den Episodenmanager
+    container_name: episodneManager
     volumes:
-      - ./downloads:/app/Folgen
-      - ./downloads/logs:/app/Logs
-      - ./app:/app/src
-    depends_on:
+      - .:/app # Mountet das aktuelle Verzeichnis in /app im Container
+    environment:
+      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub # <-- KORRIGIERT: Service-Name statt Container-Name
+      - SERIE_NAME=rick-and-morty
+      - PYTHONUNBUFFERED=1
+    command: python /app/findEpisodenUrl.py
+    networks:
+      - pihole02_network # <-- HINZUGEFÜGT: Der Episodenmanager muss im selben Netzwerk sein
+    dns:
+      - 172.21.0.100 # <-- HINZUGEFÜGT: Nutzt Pi-hole für DNS-Auflösung
+    depends_on: # <-- HINZUGEFÜGT: Stellt sicher, dass Selenium und Pi-hole bereit sind
       selenium-chromium:
         condition: service_healthy
-      pihole:
+      pihole02:
         condition: service_healthy
-    environment:
-      - PYTHONUNBUFFERED=1
-      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
-      - TS_DOWNLOAD_THREADS=10
-      - Agent_Name=Agent_01
-    command: ["python", "/app/src/downloadManager.py", "Agent01", "https://s.to/redirect/16885789", "/app/Folgen", "--no-headless"]
-    networks:
-      pihole_network:
-    dns:
-      - 172.20.0.100
-
-  # Dein Python-Anwendungs-Container
-  video-downloader-app02:
-    build:
-      context: /home/woodly/Coding/AI-SerienDownlaod
-      dockerfile: ./docker/python-app/Dockerfile
-    image: seriendownloader-app:latest
-    platform: linux/arm64
-    container_name: seriendownloader-app02
-    volumes:
-      - ./downloads:/app/Folgen
-      - ./downloads/logs:/app/Logs
-      - ./app:/app/src
-    depends_on:
-      selenium-chromium:
-        condition: service_healthy
-      pihole:
-        condition: service_healthy
-    environment:
-      - PYTHONUNBUFFERED=1
-      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
-      - TS_DOWNLOAD_THREADS=10
-      - Agent_Name=Agent_02
-    command: ["python", "/app/src/downloadManager.py", "Agent02", "https://s.to/redirect/17066566", "/app/Folgen/test/", "--no-headless"]
-    networks:
-      pihole_network:
-    dns:
-      - 172.20.0.100
 
 # Definition der Netzwerke
 networks:
-  pihole_network:
+  pihole02_network:
     ipam:
       config:
-        - subnet: 172.20.0.0/24
-
-# Definition der Volumes für persistente Daten
-volumes:
-  pihole_config:
-  pihole_dnsmasq:
-  downloader_data: # Dieses Volume wird nicht direkt in docker-compose verwendet, aber kann für zukünftige Erweiterungen nützlich sein
+        - subnet: 172.21.0.0/24

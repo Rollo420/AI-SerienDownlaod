@@ -22,35 +22,48 @@ import logging
 # --- Konfiguration ---
 DEFAULT_TIMEOUT = 30 # Timeout für das Warten auf Elemente
 VIDEO_START_TIMEOUT = 15 # Spezifischer Timeout für den Video-Start-Versuch
-LOGFILE_PATH = "/app/Folgen/seriendownloader.log"
-
-
-# --- Logging Setup ---
-# Sicherstellen, dass das Verzeichnis für die Logdatei existiert
-os.makedirs(os.path.dirname(LOGFILE_PATH), exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    # ANGEPASST: Füge %(filename)s:%(lineno)d zum Format hinzu, um Dateiname und Zeilennummer anzuzeigen
-    format="%(asctime)s %(levelname)s %(filename)s:%(lineno)d - %(message)s",
-    handlers=[
-        logging.FileHandler(LOGFILE_PATH, encoding="utf-8"),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-
-logger = logging.getLogger("seriendownloader")
+#LOGFILE_PATH = "/app/Folgen/seriendownloader.log"
+#
+#
+## --- Logging Setup ---
+## Sicherstellen, dass das Verzeichnis für die Logdatei existiert
+#os.makedirs(os.path.dirname(LOGFILE_PATH), exist_ok=True)
+#
+#logging.basicConfig(
+#    level=logging.INFO,
+#    format="%(asctime)s %(agentName)s %(levelname)s %(filename)s:%(lineno)d - %(message)s",
+#    handlers=[
+#        logging.FileHandler(LOGFILE_PATH, encoding="utf-8"),
+#        logging.StreamHandler(sys.stdout)
+#    ]
+#)
+#
+#logger = logging.getLogger("seriendownloader")
 
 # --- Hilfsfunktionen ---
 
-def log(msg, level="info"):
-    if level == "error":
-        logger.error(msg)
-    elif level == "warning":
-        logger.warning(msg)
-    else:
-        logger.info(msg)
 
+def log(msg, level="info"):
+    """
+    Schreibt eine Nachricht in die Log-Datei und auf die Konsole.
+    Verwendet den Logger "seriendownloader" und fügt den Agentennamen als 'extra' Kontext hinzu.
+    """
+    # Angepasst: Holt 'agentName' vom Attribut der 'log'-Funktion,
+    # das in der main-Funktion gesetzt wird.
+    extra_data = {'agentName': getattr(log, 'agentName', 'nullAgent')}
+
+    current_logger = logging.getLogger("seriendownloader")
+
+    if level == "error":
+        current_logger.error(msg, extra=extra_data)
+    elif level == "warning":
+        current_logger.warning(msg, extra=extra_data)
+    elif level == "debug":
+        current_logger.debug(msg, extra=extra_data)
+    else:
+        current_logger.info(msg, extra=extra_data)
+
+        
 def download_file(url, filename, directory):
     """Lädt eine Datei herunter und speichert sie im angegebenen Verzeichnis."""
     filepath = os.path.join(directory, filename)
@@ -739,12 +752,12 @@ def extract_segment_urls_from_performance_logs(driver):
                 or ".mp4" in url and "segment" in url # Erkennung für MP4 Segmente
                 or "seg-" in url
                 or ".mpd" in url # DASH Manifeste
-                or ".m3u8" in url # HLS Manifeste
+               # or ".m3u8" in url # HLS Manifeste
                 or re.search(r'\/\d+\.ts', url)
                 or re.search(r'chunk-\d+\.m4s', url)
                 or re.search(r'manifest\.fmp4', url) # Beispiel für FMP4 Manifest
                 or re.search(r'\.mpd\b', url) # Genauere Erkennung von .mpd als Endung
-                or re.search(r'\.m3u8\b', url) # Genauere Erkennung von .m3u8 als Endung
+               # or re.search(r'\.m3u8\b', url) # Genauere Erkennung von .m3u8 als Endung
             ):
                 found_urls.add(url)
     except WebDriverException as e:
@@ -757,11 +770,52 @@ def extract_segment_urls_from_performance_logs(driver):
 
 def main():
     parser = argparse.ArgumentParser(description="Automatisiertes Streaming-Video-Download-Tool für Linux/WSL/Docker.")
+    parser.add_argument("agentName", help="Agent Name für die Logs.")
     parser.add_argument("url", help="Die URL des Videos/der Episode zum Streamen.")
     parser.add_argument("output_path", help="Der Pfad, in dem das Video gespeichert werden soll (dies wird der Serien-Basisordner).")
     parser.add_argument("--no-headless", action="store_true", help="Deaktiviert den Headless-Modus (nur für Debugging).")
     args = parser.parse_args()
     driver = None
+    
+    
+    
+    
+    log_file_base_path = "/app/Logs"
+    os.makedirs(log_file_base_path, exist_ok=True)
+    
+    cleaned_agent_name = args.agentName.strip().replace(" ", "_").replace("/", "_")
+    LOGFILE_PATH = os.path.join(log_file_base_path, f"{cleaned_agent_name}.log")
+
+    # Setze den Agentennamen als Attribut der 'log'-Funktion, damit sie darauf zugreifen kann.
+    # Dies ist der Mechanismus, um den Wert ohne globale Variable zu übergeben.
+    log.agentName = args.agentName
+
+    # --- Angepasstes Logging Setup für Live-Ausgabe ---
+    # Hole den Logger direkt
+    logger = logging.getLogger("seriendownloader")
+    logger.setLevel(logging.INFO) # Setze das allgemeine Level für den Logger
+
+    # Optional: Entferne alle bestehenden Handler, falls basicConfig bereits aufgerufen wurde
+    # Dies ist nützlich, wenn das Skript in einer Umgebung läuft, in der Logging bereits konfiguriert sein könnte.
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+        handler.close()
+
+    # Erstelle einen Formatter mit dem gewünschten Format, inklusive Agentenname, Dateiname und Zeilennummer
+    formatter = logging.Formatter("%(asctime)s %(agentName)s %(levelname)s %(filename)s:%(lineno)d - %(message)s")
+
+    # Erstelle den FileHandler manuell.
+    # ENTFERNT: 'buffering=1', da dies in Python-Versionen vor 3.9 einen TypeError verursacht.
+    # Die Pufferung wird nun vom darunterliegenden Dateisystem gehandhabt.
+    file_handler = logging.FileHandler(LOGFILE_PATH, encoding="utf-8")
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    # Erstelle den StreamHandler (für die Konsolenausgabe)
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    
     try:
         driver = initialize_driver(headless=not args.no_headless)
         base_series_output_path = os.path.abspath(args.output_path)

@@ -1,1 +1,2 @@
-[VNC VIEW in WEB](http://localhost:7900/?autoconnect=1&resize=scale&password=secret)
+Connect to VNC over the Web
+http://192.168.178.78:7900/vnc.html?autoconnect=true&password=secret
