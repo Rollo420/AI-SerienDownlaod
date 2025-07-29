@@ -1,0 +1,3376 @@
+[
+    {
+        "series_name": "Rick and Morty",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18527708",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18527708",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18914901",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18914901",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18833297",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18833297",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916154",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805008",
+                        "voe_link": "https://186.2.175.5/redirect/18916154",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16064037",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805004",
+                        "voe_link": "https://186.2.175.5/redirect/16064037",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916151",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805011",
+                        "voe_link": "https://186.2.175.5/redirect/18916151",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916150",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805012",
+                        "voe_link": "https://186.2.175.5/redirect/18916150",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916153",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805019",
+                        "voe_link": "https://186.2.175.5/redirect/18916153",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916155",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805010",
+                        "voe_link": "https://186.2.175.5/redirect/18916155",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18833310",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805021",
+                        "voe_link": "https://186.2.175.5/redirect/18833310",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916157",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18916157",
+                        "episode_number": 11
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19010932",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19010932",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18966178",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18966178",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18898299",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18898299",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18935455",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18935455",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19011007",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19011007",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18956340",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18956340",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978722",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18978722",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916185",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18916185",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19009425",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19009425",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19010987",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19010987",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19009424",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19009424",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19010972",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19010972",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978718",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18978718",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18916158",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18916160",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978723",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18978723",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16987782",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16987782",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978724",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18978724",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18900189",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18900189",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17714505",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805042",
+                        "voe_link": "https://186.2.175.5/redirect/17714505",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19010930",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19010930",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 4,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18875182",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16990218",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17118283",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17118325",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18966228",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18966227",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18935119",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18541998",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978725",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18978721",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16975699",
+                        "vidoza_link": "https://186.2.175.5/redirect/18805047",
+                        "voe_link": "https://186.2.175.5/redirect/16975700",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19010973",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19010974",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978683",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18914908",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18995441",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16975079",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18962626",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18962627",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 5,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18922736",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18781973",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18912841",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18938011",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18980664",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18980665",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18963647",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18963646",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978716",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19011681",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18978720",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18955413",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17109329",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17072607",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18912840",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18912837",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19009493",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18979896",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18896994",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18896998",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 6,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17066566",
+                        "vidoza_link": "https://186.2.175.5/redirect/11528783",
+                        "voe_link": "https://186.2.175.5/redirect/17066431",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17053988",
+                        "vidoza_link": "https://186.2.175.5/redirect/11528784",
+                        "voe_link": "https://186.2.175.5/redirect/17073633",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17078166",
+                        "vidoza_link": "https://186.2.175.5/redirect/11569672",
+                        "voe_link": "https://186.2.175.5/redirect/16934311",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17078722",
+                        "vidoza_link": "https://186.2.175.5/redirect/15664730",
+                        "voe_link": "https://186.2.175.5/redirect/17072320",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16885789",
+                        "vidoza_link": "https://186.2.175.5/redirect/11642736",
+                        "voe_link": "https://186.2.175.5/redirect/17072293",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17039654",
+                        "vidoza_link": "https://186.2.175.5/redirect/11681578",
+                        "voe_link": "https://186.2.175.5/redirect/17088335",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18955410",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18955411",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18861216",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18962517",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19010934",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19010933",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16977491",
+                        "vidoza_link": "https://186.2.175.5/redirect/11902113",
+                        "voe_link": "https://186.2.175.5/redirect/16975869",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 7,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17077619",
+                        "vidoza_link": "https://186.2.175.5/redirect/13207410",
+                        "voe_link": "https://186.2.175.5/redirect/17040395",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17077787",
+                        "vidoza_link": "https://186.2.175.5/redirect/13262076",
+                        "voe_link": "https://186.2.175.5/redirect/17066615",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17075692",
+                        "vidoza_link": "https://186.2.175.5/redirect/13281052",
+                        "voe_link": "https://186.2.175.5/redirect/17075693",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17026475",
+                        "vidoza_link": "https://186.2.175.5/redirect/13299998",
+                        "voe_link": "https://186.2.175.5/redirect/17040561",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17077098",
+                        "vidoza_link": "https://186.2.175.5/redirect/13351125",
+                        "voe_link": "https://186.2.175.5/redirect/17077183",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17070101",
+                        "vidoza_link": "https://186.2.175.5/redirect/13351124",
+                        "voe_link": "https://186.2.175.5/redirect/17078445",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16880634",
+                        "vidoza_link": "https://186.2.175.5/redirect/13383882",
+                        "voe_link": "https://186.2.175.5/redirect/17039901",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17071804",
+                        "vidoza_link": "https://186.2.175.5/redirect/13424677",
+                        "voe_link": "https://186.2.175.5/redirect/17073129",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17074094",
+                        "vidoza_link": "https://186.2.175.5/redirect/13456017",
+                        "voe_link": "https://186.2.175.5/redirect/17074078",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17078014",
+                        "vidoza_link": "https://186.2.175.5/redirect/13536408",
+                        "voe_link": "https://186.2.175.5/redirect/17071875",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 8,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18874162",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18874162",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18979910",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18979910",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18980578",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18980578",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18966160",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18966160",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18887722",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18887722",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18957949",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18957949",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18976969",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18976969",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18963675",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18963675",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19011640",
+                        "vidoza_link": "https://186.2.175.5/redirect/18885713",
+                        "voe_link": "https://186.2.175.5/redirect/19011640",
+                        "episode_number": 9
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "One Punch Man",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15862097",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445907",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195485",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445910",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198762",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445918",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195346",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14001335",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196907",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445930",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15495115",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445937",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13857617",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445942",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15495108",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445951",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196908",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445954",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196660",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445960",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196206",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445970",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13856602",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8445973",
+                        "episode_number": 12
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9018827",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840663",
+                        "voe_link": "https://186.2.175.5/redirect/8445977",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8822739",
+                        "vidoza_link": "https://186.2.175.5/redirect/15637438",
+                        "voe_link": "https://186.2.175.5/redirect/12172698",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8822736",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840660",
+                        "voe_link": "https://186.2.175.5/redirect/8445994",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12251049",
+                        "vidoza_link": "https://186.2.175.5/redirect/15637440",
+                        "voe_link": "https://186.2.175.5/redirect/8446004",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8822737",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840669",
+                        "voe_link": "https://186.2.175.5/redirect/12251051",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8446081",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840672",
+                        "voe_link": "https://186.2.175.5/redirect/8446019",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9619836",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8446029",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8446098",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8446038",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13840674",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840680",
+                        "voe_link": "https://186.2.175.5/redirect/12604856",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13840675",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840683",
+                        "voe_link": "https://186.2.175.5/redirect/8446057",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13840677",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840684",
+                        "voe_link": "https://186.2.175.5/redirect/8446066",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13840648",
+                        "vidoza_link": "https://186.2.175.5/redirect/13840662",
+                        "voe_link": "https://186.2.175.5/redirect/8446072",
+                        "episode_number": 12
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "Death Note",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196779",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17196779",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197155",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17197155",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199067",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17199067",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195892",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195892",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353552",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17353552",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198041",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198041",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195865",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195865",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195491",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195491",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13861874",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13861874",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195699",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195699",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17284169",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17284169",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198110",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198110",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195825",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195825",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196070",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17196070",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195809",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195809",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195856",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195856",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198111",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198111",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197831",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17197831",
+                        "episode_number": 18
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14269883",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14269883",
+                        "episode_number": 19
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195627",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195627",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199093",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17199093",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196044",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17196044",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196639",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17196639",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353685",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17353685",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195893",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195893",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198472",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198472",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195393",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195393",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197262",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17197262",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198881",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198881",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196244",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17196244",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14270206",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14270206",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198813",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198813",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14275934",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14275934",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196429",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17196429",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198009",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198009",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198197",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17198197",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195894",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195894",
+                        "episode_number": 18
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "Attack on Titan",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195258",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8283522",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16494179",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8283533",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195293",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12332497",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195784",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448909",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196850",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448912",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196876",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448913",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920409",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448914",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16151833",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448916",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198792",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13004089",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196186",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448917",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197807",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448918",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198547",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918564",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196732",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448922",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196221",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12332502",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198916",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448921",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198912",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448924",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197808",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448925",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198160",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448923",
+                        "episode_number": 18
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197472",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448927",
+                        "episode_number": 19
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195113",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448930",
+                        "episode_number": 20
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13342301",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18353534",
+                        "episode_number": 21
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195878",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918565",
+                        "episode_number": 22
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353522",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448931",
+                        "episode_number": 23
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16596889",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448929",
+                        "episode_number": 24
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198661",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13916742",
+                        "episode_number": 25
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197809",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12332500",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353547",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448934",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196145",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448933",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197593",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448936",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197810",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918567",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192570",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448935",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197132",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12172821",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197505",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448940",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353791",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12269280",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17194952",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448939",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198201",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448942",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195294",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8283546",
+                        "episode_number": 12
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199103",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12381995",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196222",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448944",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195125",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12332507",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195879",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448947",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353594",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448946",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197423",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448948",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15494984",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12381996",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197330",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448950",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197087",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448951",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196877",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448952",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353474",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448954",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196572",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448953",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353508",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7906306",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15284053",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7703919",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13858158",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13858158",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353576",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/6183762",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13863315",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/6183848",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13922656",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13922656",
+                        "episode_number": 18
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199184",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7541144",
+                        "episode_number": 19
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353708",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/6183807",
+                        "episode_number": 20
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196988",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/6183817",
+                        "episode_number": 21
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197436",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17197436",
+                        "episode_number": 22
+                    }
+                ]
+            },
+            {
+                "season_number": 4,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353506",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448955",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198339",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448957",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13350537",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918566",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196821",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448956",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198639",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448959",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198001",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448960",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196373",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13922196",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199177",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13916745",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198380",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918568",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198194",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448962",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17284174",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448965",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920438",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8448966",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197644",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17197644",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197975",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7945738",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195247",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7945767",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195478",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17195478",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17284305",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9589861",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196219",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9647345",
+                        "episode_number": 18
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198252",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918570",
+                        "episode_number": 19
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353503",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12915497",
+                        "episode_number": 20
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196220",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12381998",
+                        "episode_number": 21
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13858609",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12382000",
+                        "episode_number": 22
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195518",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9894152",
+                        "episode_number": 23
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197498",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9950428",
+                        "episode_number": 24
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196700",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/10000120",
+                        "episode_number": 25
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195045",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/10036236",
+                        "episode_number": 26
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195694",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12918569",
+                        "episode_number": 27
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198381",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/10186517",
+                        "episode_number": 28
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198000",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12313890",
+                        "episode_number": 29
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198027",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13323246",
+                        "episode_number": 30
+                    }
+                ]
+            },
+            {
+                "season_number": 5,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "Demon Slayer",
+        "seasons": []
+    },
+    {
+        "series_name": "Jujutsu Kaisen",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195450",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832061",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196058",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17792194",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353756",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832063",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199017",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832064",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353469",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832066",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14271376",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832067",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198867",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832070",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353799",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12336396",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13844407",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12379798",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196604",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832075",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195423",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12379800",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197429",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832079",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197074",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832080",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353565",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832083",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198486",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832082",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17284175",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832099",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17284186",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832090",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15484794",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832094",
+                        "episode_number": 18
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195008",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832095",
+                        "episode_number": 19
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920260",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8832091",
+                        "episode_number": 20
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197878",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17197878",
+                        "episode_number": 21
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17353759",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7923850",
+                        "episode_number": 22
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17194776",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7936822",
+                        "episode_number": 23
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196666",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/7950537",
+                        "episode_number": 24
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192562",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12759911",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17194833",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12796363",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192645",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12824559",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195646",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12854833",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192596",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12883025",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192624",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13032165",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192321",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13047075",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17195062",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13073785",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920261",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13099093",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192319",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13139248",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197303",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13175874",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197349",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13189126",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196786",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13230886",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192597",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13273051",
+                        "episode_number": 14
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196971",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13292082",
+                        "episode_number": 15
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17199208",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13342405",
+                        "episode_number": 16
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17196340",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13337025",
+                        "episode_number": 17
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192646",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17547227",
+                        "episode_number": 18
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192656",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13418529",
+                        "episode_number": 19
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17198469",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13443949",
+                        "episode_number": 20
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197679",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13469140",
+                        "episode_number": 21
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17192665",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13532014",
+                        "episode_number": 22
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17197938",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13683544",
+                        "episode_number": 23
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "Chainsaw Man",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11618772",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11497948",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11694118",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11532886",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12173039",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11572371",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11829961",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11610247",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11829969",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13917027",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11829973",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11684913",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11903369",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11730138",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11903375",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11792755",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12021090",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11802617",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12021029",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11862544",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12036666",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11911076",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12132448",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11906323",
+                        "episode_number": 12
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "Mob Psycho 100",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18654377",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16269312",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920645",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16005086",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920648",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16048624",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920655",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16077505",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920634",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16077511",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18833566",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16063753",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920651",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16062817",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920649",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16064453",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920644",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16077512",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920650",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16054716",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18920647",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16022596",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18833568",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16077507",
+                        "episode_number": 12
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18994548",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18994549",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18996979",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18996972",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18982051",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18982160",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18964299",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19011964",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18994309",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18994508",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19004898",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19004899",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19008807",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19008798",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18963678",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18977687",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18876191",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19011169",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18996980",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17735603",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18901595",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18901596",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18995760",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18995793",
+                        "episode_number": 12
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18935879",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17733995",
+                        "episode_number": 13
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18914160",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18914160",
+                        "episode_number": 14
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16960364",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/19008797",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11543562",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13056998",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11543578",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11543569",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18994494",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18994495",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18860760",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18996978",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18999161",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18999145",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18997085",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18875608",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16916903",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18899670",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16984465",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16797665",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/19004733",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18530073",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18994432",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18994435",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18997175",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/18997174",
+                        "episode_number": 12
+                    }
+                ]
+            },
+            {
+                "season_number": 4,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "boku-dake-ga-inai-machi",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000812",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310737",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000811",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310745",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000810",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310749",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000819",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310758",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000814",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13008512",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000818",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310775",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11831767",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310780",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000817",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12916286",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000813",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310790",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000815",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11834148",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9000824",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8310805",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8310729",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13922368",
+                        "episode_number": 12
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "yakusoku-no-neverland",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12931487",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620820",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620813",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620826",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620812",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620823",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620814",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620824",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8276416",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620825",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620815",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620827",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620816",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620829",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620817",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620828",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620819",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8361526",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620818",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620830",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12384154",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620831",
+                        "episode_number": 11
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9620821",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9583386",
+                        "episode_number": 12
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10161115",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620832",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10161123",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620834",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10161127",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620833",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10161134",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620836",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10161120",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13921483",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10810606",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9620837",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10810612",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8503998",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10810613",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13915019",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10810620",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13705738",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10810625",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12931478",
+                        "episode_number": 10
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10810595",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8504000",
+                        "episode_number": 11
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "Dark",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12660644",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12660644",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982948",
+                        "vidoza_link": "https://186.2.175.5/redirect/8379431",
+                        "voe_link": "https://186.2.175.5/redirect/8982948",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982957",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982957",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14146016",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14146016",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982960",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982960",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14153335",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14153335",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982965",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982965",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982961",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982961",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982958",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982958",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982955",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982955",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982956",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982956",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982962",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982962",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12251923",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12251923",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982972",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982972",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982964",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982964",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982976",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982976",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982969",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982969",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8982975",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8982975",
+                        "episode_number": 8
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10373076",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8562720",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/7022652",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8562706",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/7022651",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8562727",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/7009432",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8562731",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10372914",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13475522",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/7022649",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8562738",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10372829",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12173131",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/7022648",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8562770",
+                        "episode_number": 8
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "Sherlock",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18353371",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16585953",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16585954",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15322174",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16420336",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16585957",
+                        "episode_number": 3
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13112308",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11317338",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11832578",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/10332050",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8788773",
+                        "vidoza_link": "https://186.2.175.5/redirect/15675333",
+                        "voe_link": "https://186.2.175.5/redirect/8787578",
+                        "episode_number": 3
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11786802",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12173094",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8788777",
+                        "vidoza_link": "https://186.2.175.5/redirect/15675314",
+                        "voe_link": "https://186.2.175.5/redirect/11317343",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11889561",
+                        "vidoza_link": "https://186.2.175.5/redirect/15675244",
+                        "voe_link": "https://186.2.175.5/redirect/12381402",
+                        "episode_number": 3
+                    }
+                ]
+            },
+            {
+                "season_number": 4,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12287976",
+                        "vidoza_link": "https://186.2.175.5/redirect/15675267",
+                        "voe_link": "https://186.2.175.5/redirect/8882049",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8882061",
+                        "vidoza_link": "https://186.2.175.5/redirect/15675254",
+                        "voe_link": "https://186.2.175.5/redirect/8787583",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8882063",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8787584",
+                        "episode_number": 3
+                    }
+                ]
+            },
+            {
+                "season_number": 5,
+                "episode_links": []
+            }
+        ]
+    },
+    {
+        "series_name": "Stranger Things",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14222297",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592073",
+                        "voe_link": "https://186.2.175.5/redirect/8770941",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14222299",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592080",
+                        "voe_link": "https://186.2.175.5/redirect/9596478",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14222300",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592084",
+                        "voe_link": "https://186.2.175.5/redirect/9596477",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14222302",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592085",
+                        "voe_link": "https://186.2.175.5/redirect/9596479",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770284",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592087",
+                        "voe_link": "https://186.2.175.5/redirect/9596480",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770282",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592086",
+                        "voe_link": "https://186.2.175.5/redirect/8770948",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770278",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592088",
+                        "voe_link": "https://186.2.175.5/redirect/9582813",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10725594",
+                        "vidoza_link": "https://186.2.175.5/redirect/12592074",
+                        "voe_link": "https://186.2.175.5/redirect/9945454",
+                        "episode_number": 8
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16772546",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9596482",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770317",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9596484",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770320",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770950",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12173224",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770954",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11964259",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770956",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770337",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770957",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770303",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770958",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8907608",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770960",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8907609",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770959",
+                        "episode_number": 9
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/10943799",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770972",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770348",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770963",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770347",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12559846",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770349",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12559866",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15986455",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12559867",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770360",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8770967",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770367",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/17526640",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8770375",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12559886",
+                        "episode_number": 8
+                    }
+                ]
+            },
+            {
+                "season_number": 4,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11084177",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084131",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11084141",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084136",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11075395",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084187",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11084119",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084139",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11084170",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084158",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11642725",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084153",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11084151",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12560096",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12789940",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/10951216",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16847206",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/11084128",
+                        "episode_number": 9
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "Mindhunter",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847313",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847313",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13102062",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13102062",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847308",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847308",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847307",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847307",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847306",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847306",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847316",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847316",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847317",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847317",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847318",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847318",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847320",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847320",
+                        "episode_number": 9
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847319",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847319",
+                        "episode_number": 10
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/13918432",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/13918432",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847322",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847322",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847321",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847321",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847323",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847323",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847325",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847325",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12924871",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/12924871",
+                        "episode_number": 6
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847328",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847328",
+                        "episode_number": 7
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847326",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847326",
+                        "episode_number": 8
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8847342",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8847342",
+                        "episode_number": 9
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "Chernobyl",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17297947",
+                        "vidoza_link": "https://186.2.175.5/redirect/15460256",
+                        "voe_link": "https://186.2.175.5/redirect/17297947",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17762121",
+                        "vidoza_link": "https://186.2.175.5/redirect/15460303",
+                        "voe_link": "https://186.2.175.5/redirect/17762121",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18868104",
+                        "vidoza_link": "https://186.2.175.5/redirect/15460313",
+                        "voe_link": "https://186.2.175.5/redirect/18868104",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18868101",
+                        "vidoza_link": "https://186.2.175.5/redirect/15460375",
+                        "voe_link": "https://186.2.175.5/redirect/18868101",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/18868105",
+                        "vidoza_link": "https://186.2.175.5/redirect/15460405",
+                        "voe_link": "https://186.2.175.5/redirect/18868105",
+                        "episode_number": 5
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "Fleabag",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9591007",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9591007",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9004507",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9004507",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9004518",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9004518",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9004523",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9004523",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9004517",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9004517",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/9004521",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/9004521",
+                        "episode_number": 6
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/16248577",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/16248577",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8796575",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8796575",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8796577",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8796577",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8796583",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8796583",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8796588",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8796588",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/8796567",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/8796567",
+                        "episode_number": 6
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "series_name": "Black Mirror",
+        "seasons": [
+            {
+                "season_number": 1,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11826768",
+                        "vidoza_link": "https://186.2.175.5/redirect/11826781",
+                        "voe_link": "https://186.2.175.5/redirect/8457128",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/12803016",
+                        "vidoza_link": "https://186.2.175.5/redirect/11826793",
+                        "voe_link": "https://186.2.175.5/redirect/17546568",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/11826786",
+                        "vidoza_link": "https://186.2.175.5/redirect/11826789",
+                        "voe_link": "https://186.2.175.5/redirect/8457134",
+                        "episode_number": 3
+                    }
+                ]
+            },
+            {
+                "season_number": 2,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525245",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15525244",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15524916",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15515778",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525190",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15525188",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15513428",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15513428",
+                        "episode_number": 4
+                    }
+                ]
+            },
+            {
+                "season_number": 3,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15515779",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15524993",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525246",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15525247",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15531603",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15538646",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525767",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15525735",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15532046",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15531902",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15519272",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15519268",
+                        "episode_number": 6
+                    }
+                ]
+            },
+            {
+                "season_number": 4,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525248",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15538666",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/14670061",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/14677519",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15524814",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15538653",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15538659",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15531951",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15531440",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15538654",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15567919",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15538667",
+                        "episode_number": 6
+                    }
+                ]
+            },
+            {
+                "season_number": 5,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15531913",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15568169",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15531561",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15525755",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15567894",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15567915",
+                        "episode_number": 3
+                    }
+                ]
+            },
+            {
+                "season_number": 6,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525196",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15538661",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15525377",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15525777",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15513372",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15513373",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15568172",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15531840",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/15531842",
+                        "vidoza_link": null,
+                        "voe_link": "https://186.2.175.5/redirect/15568209",
+                        "episode_number": 5
+                    }
+                ]
+            },
+            {
+                "season_number": 7,
+                "episode_links": [
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17469225",
+                        "vidoza_link": "https://186.2.175.5/redirect/17469293",
+                        "voe_link": "https://186.2.175.5/redirect/17469362",
+                        "episode_number": 1
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17469230",
+                        "vidoza_link": "https://186.2.175.5/redirect/17469283",
+                        "voe_link": "https://186.2.175.5/redirect/17469282",
+                        "episode_number": 2
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17469234",
+                        "vidoza_link": "https://186.2.175.5/redirect/17469290",
+                        "voe_link": "https://186.2.175.5/redirect/17469289",
+                        "episode_number": 3
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17469237",
+                        "vidoza_link": "https://186.2.175.5/redirect/17469291",
+                        "voe_link": "https://186.2.175.5/redirect/17487740",
+                        "episode_number": 4
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17469240",
+                        "vidoza_link": "https://186.2.175.5/redirect/17469286",
+                        "voe_link": "https://186.2.175.5/redirect/17469287",
+                        "episode_number": 5
+                    },
+                    {
+                        "primary_link": "https://186.2.175.5/redirect/17469232",
+                        "vidoza_link": "https://186.2.175.5/redirect/17469285",
+                        "voe_link": "https://186.2.175.5/redirect/17469284",
+                        "episode_number": 6
+                    }
+                ]
+            },
+            {
+                "season_number": 8,
+                "episode_links": []
+            }
+        ]
+    }
+]

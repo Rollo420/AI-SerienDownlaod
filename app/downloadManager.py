@@ -14,34 +14,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException, ElementClickInterceptedException, StaleElementReferenceException
-import concurrent.futures
+import concurrent.futures 
 import httpx
 from bs4 import BeautifulSoup
 import logging
 
 # --- Konfiguration ---
-DEFAULT_TIMEOUT = 30 # Timeout für das Warten auf Elemente
-VIDEO_START_TIMEOUT = 15 # Spezifischer Timeout für den Video-Start-Versuch
-#LOGFILE_PATH = "/app/Folgen/seriendownloader.log"
-#
-#
-## --- Logging Setup ---
-## Sicherstellen, dass das Verzeichnis für die Logdatei existiert
-#os.makedirs(os.path.dirname(LOGFILE_PATH), exist_ok=True)
-#
-#logging.basicConfig(
-#    level=logging.INFO,
-#    format="%(asctime)s %(agentName)s %(levelname)s %(filename)s:%(lineno)d - %(message)s",
-#    handlers=[
-#        logging.FileHandler(LOGFILE_PATH, encoding="utf-8"),
-#        logging.StreamHandler(sys.stdout)
-#    ]
-#)
-#
-#logger = logging.getLogger("seriendownloader")
+DEFAULT_TIMEOUT = 60 # Timeout für das Warten auf Elemente
+VIDEO_START_TIMEOUT = 120 # Spezifischer Timeout für den Video-Start-Versuch
+
+
 
 # --- Hilfsfunktionen ---
-
 
 def log(msg, level="info"):
     """
@@ -63,7 +47,40 @@ def log(msg, level="info"):
     else:
         current_logger.info(msg, extra=extra_data)
 
-        
+def load_and_filter_proxies():
+    """
+    Lädt Proxys aus einer JSON-Datei, filtert nach "alive": true und "http"-Protokoll.
+    Gibt eine Liste von Proxy-Strings zurück (z.B. "http://ip:port").
+    """
+    
+    proxies_list = []
+    try:
+            data = requests.get("https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=json")
+            if "proxies" in data:
+                for proxy_entry in data["proxies"]:
+                    # Filtere nach "alive": true und "http" oder "https" Protokoll
+                    # Beachte: Dein Beispiel zeigt "protocol": "http" und "ssl": false.
+                    # Wenn du HTTPS-Ziele hast, brauchst du idealerweise Proxys mit "https" und "ssl": true.
+                    if proxy_entry.get("alive", False) and \
+                       (proxy_entry.get("protocol") == "http" or proxy_entry.get("protocol") == "https"):
+                        # Überprüfe, ob der 'proxy'-Schlüssel existiert
+                        proxy_string = proxy_entry.get("proxy")
+                        if proxy_string:
+                            proxies_list.append(proxy_string)
+                            log(f"Proxy geladen: {proxy_string} (Anonymität: {proxy_entry.get('anonymity')}, Land: {proxy_entry.get('ip_data', {}).get('country')})", "debug")
+            else:
+                log(f"WARNUNG: 'proxies'-Schlüssel nicht in {filepath} gefunden.", "warning")
+    except FileNotFoundError:
+        log(f"FEHLER: Proxy-Datei '{filepath}' nicht gefunden. Fahre ohne Proxys fort.", "error")
+    except json.JSONDecodeError as e:
+        log(f"FEHLER: Ungültiges JSON-Format in '{filepath}': {e}. Fahre ohne Proxys fort.", "error")
+    except Exception as e:
+        log(f"Ein unerwarteter Fehler beim Laden der Proxys aufgetreten: {e}. Fahre ohne Proxys fort.", "error")
+    
+    if not proxies_list:
+        log("WARNUNG: Keine gültigen Proxys gefunden oder geladen. Der Browser wird ohne Proxy gestartet.", "warning")
+    return proxies_list 
+ 
 def download_file(url, filename, directory):
     """Lädt eine Datei herunter und speichert sie im angegebenen Verzeichnis."""
     filepath = os.path.join(directory, filename)
@@ -218,7 +235,7 @@ def get_unique_directory_name(base_path):
 
 # --- Browser-Initialisierung ---
 
-def initialize_driver(headless=True):
+def initialize_driver(headless=True, proxyAddresse=None):
     options = Options()
     if headless:
         log("Starte Chromium im Headless-Modus (im Docker-Container)...")
@@ -234,6 +251,11 @@ def initialize_driver(headless=True):
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
+    
+    if proxyAddresse:
+        log(f"Konfiguriere Browser für Proxy: {proxyAddresse}")
+        options.add_argument(f'--proxy-server={proxyAddresse}')
+        
     # Adblock Plus Extension laden (Pfad im Container anpassen!)
     adblock_path = "/app/src/adblockplus.crx"
     if os.path.exists(adblock_path):
@@ -773,11 +795,10 @@ def main():
     parser.add_argument("agentName", help="Agent Name für die Logs.")
     parser.add_argument("url", help="Die URL des Videos/der Episode zum Streamen.")
     parser.add_argument("output_path", help="Der Pfad, in dem das Video gespeichert werden soll (dies wird der Serien-Basisordner).")
+    parser.add_argument("--proxyAddresse", help="Proxyaddresse für die verschleierung.")
     parser.add_argument("--no-headless", action="store_true", help="Deaktiviert den Headless-Modus (nur für Debugging).")
     args = parser.parse_args()
     driver = None
-    
-    
     
     
     log_file_base_path = "/app/Logs"
@@ -817,7 +838,7 @@ def main():
     logger.addHandler(stream_handler)
     
     try:
-        driver = initialize_driver(headless=not args.no_headless)
+        driver = initialize_driver(headless=not args.no_headless, proxyAddresse=args.proxyAddresse)
         base_series_output_path = os.path.abspath(args.output_path)
         os.makedirs(base_series_output_path, exist_ok=True)
         log(f"Serien-Basisordner: {base_series_output_path}")

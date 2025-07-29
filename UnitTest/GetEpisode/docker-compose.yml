@@ -1,30 +1,30 @@
 services:
 
-  selenium-chromium:
-    image: selenium/standalone-chromium:latest
-    platform: linux/arm64
-    container_name: selenium-chromium
-    ports:
-      - "4444:4444" # Host-Port 4444 -> Container-Port 4444
-      - "7900:7900" # Host-Port 7901 -> Container-Port 7900
-    shm_size: "2g" # Erhöht den Shared Memory für den Browser (kritisch für Stabilität)
-    environment:
-      - SE_VNC_PASSWORD=secret # WICHTIG: ÄNDERE DIESES PASSWORT!
-      - SE_NODE_MAX_SESSIONS=4 # Jetzt 4 parallele Sessions
-      - SE_START_XVFB=true # Essentiell für den Headless-Modus
-      - DISPLAY_WIDTH=1920
-      - DISPLAY_HEIGHT=1080
-    networks:
-      - pihole02_network
-    restart: unless-stopped
-    healthcheck: # Überprüft die Verfügbarkeit des Selenium Chromiums
-      test: ["CMD", "curl", "-f", "http://localhost:4444"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-    dns:
-      - 172.21.0.100
+  #selenium-chromium:
+  #  image: selenium/standalone-chromium:latest
+  #  platform: linux/arm64
+  #  container_name: selenium-chromium
+  #  ports:
+  #    - "4444:4444" # Host-Port 4444 -> Container-Port 4444
+  #    - "7900:7900" # Host-Port 7901 -> Container-Port 7900
+  #  shm_size: "3g" # Erhöht den Shared Memory für den Browser (kritisch für Stabilität)
+  #  environment:
+  #    - SE_VNC_PASSWORD=secret # WICHTIG: ÄNDERE DIESES PASSWORT!
+  #    - SE_NODE_MAX_SESSIONS=3 # Jetzt 4 parallele Sessions
+  #    - SE_START_XVFB=true # Essentiell für den Headless-Modus
+  #    - DISPLAY_WIDTH=1920
+  #    - DISPLAY_HEIGHT=1080
+  #  networks:
+  #    - pihole02_network
+  #  restart: unless-stopped
+  #  healthcheck: # Überprüft die Verfügbarkeit des Selenium Chromiums
+  #    test: ["CMD", "curl", "-f", "http://localhost:4444"]
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 5
+  #    start_period: 20s
+  #  dns:
+  #    - 172.21.0.100
 
   # Pi-hole DNS-Server
   pihole02:
@@ -72,14 +72,14 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub # <-- KORRIGIERT: Service-Name statt Container-Name
       - SERIE_NAME=rick-and-morty
       - PYTHONUNBUFFERED=1
-    command: python /app/findEpisodenUrl.py
+    command: python /app/getEpisodesURL.py
     networks:
       - pihole02_network # <-- HINZUGEFÜGT: Der Episodenmanager muss im selben Netzwerk sein
     dns:
       - 172.21.0.100 # <-- HINZUGEFÜGT: Nutzt Pi-hole für DNS-Auflösung
     depends_on: # <-- HINZUGEFÜGT: Stellt sicher, dass Selenium und Pi-hole bereit sind
-      selenium-chromium:
-        condition: service_healthy
+      #selenium-chromium:
+      #  condition: service_healthy
       pihole02:
         condition: service_healthy
 

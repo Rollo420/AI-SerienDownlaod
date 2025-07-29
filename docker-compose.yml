@@ -79,7 +79,7 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=10
       - Agent_Name=Agent_01
-    command: ["python", "/app/src/downloadManager.py", "Agent01", "https://s.to/redirect/16885789", "/app/Folgen", "--no-headless"]
+    command: ["python", "/app/src/downloadManager.py", "Agent01", "https://jilliandescribecompany.com/e/fcbm6izr3x5b", "/app/Folgen", "--proxyAddresse=socks4://65.109.92.51:19952", "--no-headless"]
     networks:
       pihole_network:
     dns:
@@ -107,7 +107,7 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=10
       - Agent_Name=Agent_02
-    command: ["python", "/app/src/downloadManager.py", "Agent02", "https://s.to/redirect/17066566", "/app/Folgen/test/", "--no-headless"]
+    command: ["python", "/app/src/downloadManager.py", "Agent02", "https://186.2.175.5/redirect/17066566",  "/app/Folgen/test/", "--no-headless"]
     networks:
       pihole_network:
     dns:
