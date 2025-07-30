@@ -1,7 +1,6 @@
 [
     {
         "series_name": "Rick and Morty",
-        "base_url": "https://186.2.175.5/serie/stream/rick-and-morty/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -480,7 +479,6 @@
     },
     {
         "series_name": "One Punch Man",
-        "base_url": "https://186.2.175.5/serie/stream/one-punch-man/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -684,7 +682,6 @@
     },
     {
         "series_name": "Death Note",
-        "base_url": "https://186.2.175.5/serie/stream/death-note/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -975,7 +972,6 @@
     },
     {
         "series_name": "Attack on Titan",
-        "base_url": "https://186.2.175.5/serie/stream/attack-on-titan/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -1540,7 +1536,6 @@
     },
     {
         "series_name": "Kimetsu no Yaiba",
-        "base_url": "https://186.2.175.5/serie/stream/kimetsu-no-yaiba/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -1931,7 +1926,6 @@
     },
     {
         "series_name": "Jujutsu Kaisen",
-        "base_url": "https://186.2.175.5/serie/stream/jujutsu-kaisen/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -2228,7 +2222,6 @@
     },
     {
         "series_name": "Chainsaw Man",
-        "base_url": "https://186.2.175.5/serie/stream/chainsaw-man/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -2306,7 +2299,6 @@
     },
     {
         "series_name": "Mob Psycho 100",
-        "base_url": "https://186.2.175.5/serie/stream/mob-psycho-100/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -2548,7 +2540,6 @@
     },
     {
         "series_name": "boku-dake-ga-inai-machi",
-        "base_url": "https://186.2.175.5/serie/stream/boku-dake-ga-inai-machi/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -2626,7 +2617,6 @@
     },
     {
         "series_name": "yakusoku-no-neverland",
-        "base_url": "https://186.2.175.5/serie/stream/yakusoku-no-neverland/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -2779,7 +2769,6 @@
     },
     {
         "series_name": "Tokyo Revengers",
-        "base_url": "https://186.2.175.5/serie/stream/tokyo-revengers/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3093,7 +3082,6 @@
     },
     {
         "series_name": "terror-in-tokyo",
-        "base_url": "https://186.2.175.5/serie/stream/terror-in-tokyo/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3165,7 +3153,6 @@
     },
     {
         "series_name": "Dark",
-        "base_url": "https://186.2.175.5/serie/stream/dark/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3325,7 +3312,6 @@
     },
     {
         "series_name": "Sherlock",
-        "base_url": "https://186.2.175.5/serie/stream/sherlock/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3419,7 +3405,6 @@
     },
     {
         "series_name": "Stranger Things",
-        "base_url": "https://186.2.175.5/serie/stream/stranger-things/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3626,7 +3611,6 @@
     },
     {
         "series_name": "Mindhunter",
-        "base_url": "https://186.2.175.5/serie/stream/mindhunter/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3745,7 +3729,6 @@
     },
     {
         "series_name": "Chernobyl",
-        "base_url": "https://186.2.175.5/serie/stream/chernobyl/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3781,7 +3764,6 @@
     },
     {
         "series_name": "Fleabag",
-        "base_url": "https://186.2.175.5/serie/stream/fleabag/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -3858,7 +3840,6 @@
     },
     {
         "series_name": "Black Mirror",
-        "base_url": "https://186.2.175.5/serie/stream/black-mirror/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -4075,7 +4056,6 @@
     },
     {
         "series_name": "the-flash",
-        "base_url": "https://186.2.175.5/serie/stream/the-flash/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -5177,7 +5157,6 @@
     },
     {
         "series_name": "the-good-doctor",
-        "base_url": "https://186.2.175.5/serie/stream/the-good-doctor/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,
@@ -5933,7 +5912,6 @@
     },
     {
         "series_name": "grey-s-anatomy-die-jungen-aerzte",
-        "base_url": "https://186.2.175.5/serie/stream/grey-s-anatomy-die-jungen-aerzte/staffel-1/episode-1",
         "seasons": [
             {
                 "season_number": 1,

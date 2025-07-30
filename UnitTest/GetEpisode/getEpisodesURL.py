@@ -13,7 +13,7 @@ from typing import Union # Hinzugefügt für Union-Typ-Hinweis
 # --- Globale Konfigurationen und Konstanten ---
 # Konfigurieren des Loggings
 logging.basicConfig(
-    level=logging.INFO, # Setzt den Logging-Level auf INFO für übersichtliche Ausgaben
+    level=logging.INFO, # Setzt den Logging-Level auf INFO für übersichtliche Ausgaben. Ändern Sie dies zu logging.DEBUG, um aktive Anfragen zu sehen.
     format='%(asctime)s - %(threadName)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler("series_scraper.log"), # Protokolliert in eine Datei
@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 # Maximale Anzahl gleichzeitiger Anfragen für das Abrufen von Episoden-Links (mit aiohttp)
-EPISODE_MAX_CONCURRENT_REQUESTS = 500 # Erhöht für schnellere Verarbeitung
+EPISODE_MAX_CONCURRENT_REQUESTS = 500 # Erhöht für schnellere Verarbeitung, basierend auf Ihrer Rückmeldung
 # Basis-URL für die Serie
 BASE_URL = "https://186.2.175.5"
 
@@ -34,6 +34,11 @@ global_stats = {
     "total_series_failed": 0,
     "failed_items_details": [] # Speichert Details zu Fehlern (Serie, Staffel, Episode, Film, Fehlertyp)
 }
+
+# Semaphore zur Begrenzung der gleichzeitigen Anfragen
+request_semaphore = asyncio.Semaphore(EPISODE_MAX_CONCURRENT_REQUESTS)
+# Zähler für aktive Anfragen
+active_requests_counter = 0
 
 # --- Hilfsfunktionen für Dateiverwaltung ---
 
@@ -335,6 +340,7 @@ async def fetch_stream_links_async(session: aiohttp.ClientSession, url: str, ser
     """
     Sucht nach verfügbaren Streaming-Diensten für eine TV-Serie Episode oder einen Film mit aiohttp.
     Priorisiert VOE als primären Link, dann Vidoza.
+    Verwendet ein Semaphor, um die Anzahl der gleichzeitigen Anfragen zu begrenzen.
 
     Args:
         session (aiohttp.ClientSession): Die aiohttp Client-Session.
@@ -346,94 +352,102 @@ async def fetch_stream_links_async(session: aiohttp.ClientSession, url: str, ser
     Returns:
         dict: Ein Dictionary mit 'primary_link', 'vidoza_link' und 'voe_link' (oder None).
     """
+    global active_requests_counter
     primary_link = None
     vidoza_link = None
     voe_link = None
     
-    try:
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
-            response.raise_for_status() # Löst eine Ausnahme für HTTP-Fehler (4xx oder 5xx) aus
-            html_content = await response.text()
-        
-        soup = BeautifulSoup(html_content, "lxml") # Wichtig: lxml-Parser verwenden
+    async with request_semaphore: # Erwerbe das Semaphor vor der Anfrage
+        active_requests_counter += 1
+        logging.debug(f"Aktive Anfragen: {active_requests_counter}/{EPISODE_MAX_CONCURRENT_REQUESTS} - Starte Abruf von {url}")
+        try:
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                response.raise_for_status() # Löst eine Ausnahme für HTTP-Fehler (4xx oder 5xx) aus
+                html_content = await response.text()
+            
+            soup = BeautifulSoup(html_content, "lxml") # Wichtig: lxml-Parser verwenden
 
-        elements = soup.find_all("i", class_="icon")
+            elements = soup.find_all("i", class_="icon")
 
-        all_stream_services = []
-        for element in elements:
-            class_value = element.get("class")
-            if class_value and len(class_value) > 1:
-                service_name = class_value[1]
-                link_element = element.find_parent("a")
-                if link_element:
-                    href = link_element.get("href")
-                    if href:
-                        full_href = f'{BASE_URL}{href}'
-                        all_stream_services.append({"name": service_name, "href_link": full_href})
-        
-        # Priorisiere VOE als primären Link, dann Vidoza
-        for service in all_stream_services:
-            if "VOE" in service["name"]:
-                voe_link = service["href_link"]
-                if primary_link is None:
-                    primary_link = voe_link
-            elif "Vidoza" in service["name"]: 
-                vidoza_link = service["href_link"]
-                if primary_link is None:
-                    primary_link = vidoza_link
-        
-        if primary_link is None:
-            logging.debug(f"Kein bevorzugter Streaming-Dienst (VOE oder Vidoza) für {item_type} {item_identifier} von {serie_name} unter {url} gefunden.")
-            # Füge Fehlerdetails hinzu, wenn keine Links gefunden wurden
+            all_stream_services = []
+            for element in elements:
+                class_value = element.get("class")
+                if class_value and len(class_value) > 1:
+                    service_name = class_value[1]
+                    link_element = element.find_parent("a")
+                    if link_element:
+                        href = link_element.get("href")
+                        if href:
+                            full_href = f'{BASE_URL}{href}'
+                            all_stream_services.append({"name": service_name, "href_link": full_href})
+            
+            # Priorisiere VOE als primären Link, dann Vidoza
+            for service in all_stream_services:
+                if "VOE" in service["name"]:
+                    voe_link = service["href_link"]
+                    if primary_link is None:
+                        primary_link = voe_link
+                elif "Vidoza" in service["name"]: 
+                    vidoza_link = service["href_link"]
+                    if primary_link is None:
+                        primary_link = vidoza_link
+            
+            if primary_link is None:
+                logging.debug(f"Kein bevorzugter Streaming-Dienst (VOE oder Vidoza) für {item_type} {item_identifier} von {serie_name} unter {url} gefunden.")
+                # Füge Fehlerdetails hinzu, wenn keine Links gefunden wurden
+                global_stats["failed_items_details"].append({
+                    "type": f"no_stream_links_found_{item_type}",
+                    "series": serie_name,
+                    "item_type": item_type,
+                    "item_identifier": item_identifier,
+                    "url": url,
+                    "error": "Keine bevorzugten Streaming-Links (VOE/Vidoza) gefunden"
+                })
+
+            return {"primary_link": primary_link, "vidoza_link": vidoza_link, "voe_link": voe_link}
+        except aiohttp.ClientError as e:
+            error_type = "network_error"
+            error_msg = f"FEHLER beim Abrufen von Streaming-Diensten mit aiohttp unter {url} für {item_type} {item_identifier}: {e}"
+            logging.error(error_msg)
             global_stats["failed_items_details"].append({
-                "type": f"no_stream_links_found_{item_type}",
+                "type": error_type,
                 "series": serie_name,
                 "item_type": item_type,
                 "item_identifier": item_identifier,
                 "url": url,
-                "error": "Keine bevorzugten Streaming-Links (VOE/Vidoza) gefunden"
+                "error": str(e)
             })
+            return {"primary_link": None, "vidoza_link": None, "voe_link": None}
+        except asyncio.TimeoutError:
+            error_type = "timeout_error"
+            error_msg = f"Timeout beim Abrufen von Streaming-Diensten unter {url} für {item_type} {item_identifier}."
+            logging.error(error_msg)
+            global_stats["failed_items_details"].append({
+                "type": error_type,
+                "series": serie_name,
+                "item_type": item_type,
+                "item_identifier": item_identifier,
+                "url": url,
+                "error": "Timeout"
+            })
+            return {"primary_link": None, "vidoza_link": None, "voe_link": None}
+        except Exception as e:
+            error_type = "parsing_error"
+            error_msg = f"FEHLER beim Parsen von Streaming-Diensten unter {url} für {item_type} {item_identifier}: {e}"
+            logging.error(error_msg, exc_info=True)
+            global_stats["failed_items_details"].append({
+                "type": error_type,
+                "series": serie_name,
+                "item_type": item_type,
+                "item_identifier": item_identifier,
+                "url": url,
+                "error": str(e)
+            })
+            return {"primary_link": None, "vidoza_link": None, "voe_link": None}
+        finally:
+            active_requests_counter -= 1
+            logging.debug(f"Aktive Anfragen: {active_requests_counter}/{EPISODE_MAX_CONCURRENT_REQUESTS} - Abruf von {url} beendet.")
 
-        return {"primary_link": primary_link, "vidoza_link": vidoza_link, "voe_link": voe_link}
-    except aiohttp.ClientError as e:
-        error_type = "network_error"
-        error_msg = f"FEHLER beim Abrufen von Streaming-Diensten mit aiohttp unter {url} für {item_type} {item_identifier}: {e}"
-        logging.error(error_msg)
-        global_stats["failed_items_details"].append({
-            "type": error_type,
-            "series": serie_name,
-            "item_type": item_type,
-            "item_identifier": item_identifier,
-            "url": url,
-            "error": str(e)
-        })
-        return {"primary_link": None, "vidoza_link": None, "voe_link": None}
-    except asyncio.TimeoutError:
-        error_type = "timeout_error"
-        error_msg = f"Timeout beim Abrufen von Streaming-Diensten unter {url} für {item_type} {item_identifier}."
-        logging.error(error_msg)
-        global_stats["failed_items_details"].append({
-            "type": error_type,
-            "series": serie_name,
-            "item_type": item_type,
-            "item_identifier": item_identifier,
-            "url": url,
-            "error": "Timeout"
-        })
-        return {"primary_link": None, "vidoza_link": None, "voe_link": None}
-    except Exception as e:
-        error_type = "parsing_error"
-        error_msg = f"FEHLER beim Parsen von Streaming-Diensten unter {url} für {item_type} {item_identifier}: {e}"
-        logging.error(error_msg, exc_info=True)
-        global_stats["failed_items_details"].append({
-            "type": error_type,
-            "series": serie_name,
-            "item_type": item_type,
-            "item_identifier": item_identifier,
-            "url": url,
-            "error": str(e)
-        })
-        return {"primary_link": None, "vidoza_link": None, "voe_link": None}
 
 async def get_episode_url_per_season(serien_Name: str, season: int, current_series_index: int, total_series_count: int, existing_episode_links: list):
     """
@@ -507,6 +521,8 @@ async def get_episode_url_per_season(serien_Name: str, season: int, current_seri
                 failed_fetches += 1
                 # Fehlerdetails werden bereits in fetch_stream_links_async hinzugefügt
             elif result and (result["primary_link"] or result["vidoza_link"] or result["voe_link"]):
+                # Füge die episode_number hinzu, die wir in der JSON-Struktur benötigen
+                result['episode_number'] = episode_num # Stellen Sie sicher, dass die Episodennummer im Ergebnis enthalten ist
                 temp_episode_results.append(result)
                 successful_fetches += 1
             else:
@@ -560,13 +576,8 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
         existing_movies (list): Bereits vorhandene Filmlinks für diese Sammlung.
 
     Returns:
-        dict: Ein Dictionary mit 'type', 'collection_title' und 'movies' (Liste von Film-Details).
+        list: Eine Liste von Film-Details.
     """
-    movie_collection_data = {
-        "type": "movie_collection",
-        "collection_title": "Filme", # Standardtitel, kann später aus HTML extrahiert werden
-        "movies": []
-    }
     
     full_movie_collection_url = f"{BASE_URL}{movie_collection_url_suffix}"
 
@@ -581,8 +592,8 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
             soup = BeautifulSoup(html_content, "lxml")
 
             # XPath für einzelne Filme innerhalb der Filmsammlung
-            # ANNAHME: Dies ist ähnlich wie die Episodenliste, aber auf der /filme-Seite
             movie_xpath = '//*[@id="stream"]/ul[2]/li' 
+            # Korrektur hier: Verwende movie_xpath statt target_xpath
             logging.debug(f"Suche einzelne Filme mit XPath: '{movie_xpath}' auf {full_movie_collection_url} für Serie {serien_Name}.")
             movie_li_elements = find_by_xpath_lxml(soup, movie_xpath)
 
@@ -595,29 +606,40 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
                     "xpath": movie_xpath,
                     "error": "Keine Film-li-Elemente gefunden oder XPath falsch."
                 })
-                return movie_collection_data # Gebe leere Filmsammlung zurück
+                return [] # Gebe leere Liste zurück
 
             tasks = []
+            valid_movies_to_process = [] # Liste zum Speichern von (movie_title, full_movie_url) für gültige Filme
+            
             # Erstelle ein Set der bereits vorhandenen Filmtitel/URLs für schnelle Überprüfung
-            existing_movie_identifiers = {m.get('movie_title') for m in existing_movies if isinstance(m, dict) and 'movie_title' in m} # Oder movie_url
+            existing_movie_identifiers = {m.get('movie_title') for m in existing_movies if isinstance(m, dict) and 'movie_title' in m}
 
-            for i, li in enumerate(movie_li_elements):
+            for li in movie_li_elements: # Iteriere direkt über die li-Elemente
                 a_tag = li.find('a')
+                # Überprüfe, ob es sich um ein strukturelles Element wie "Filme:" handelt
+                if li.find('span', string='Filme:'):
+                    logging.debug(f"Ignoriere strukturelles Element 'Filme:' in Filmsammlung für {serien_Name}: {li.prettify()}")
+                    continue # Überspringe dieses Element, da es kein Film-Link ist
+                
+                # Nur verarbeiten, wenn es ein gültiges 'a'-Tag mit 'href' gibt
                 if a_tag and a_tag.get('href'):
                     movie_title = a_tag.get_text(strip=True)
                     movie_url_suffix = a_tag.get('href')
                     full_movie_url = f"{BASE_URL}{movie_url_suffix}"
 
-                    if movie_title in existing_movie_identifiers: # Oder prüfe anhand der URL
+                    if movie_title in existing_movie_identifiers:
                         logging.debug(f"Film '{movie_title}' für {serien_Name} bereits vorhanden. Überspringe Abruf.")
                         continue
 
+                    # Füge den Task und die zugehörigen Filminformationen hinzu
                     tasks.append(fetch_stream_links_async(session, full_movie_url, serien_Name, 'movie', movie_title))
+                    valid_movies_to_process.append({"movie_title": movie_title, "movie_url": full_movie_url})
                 else:
-                    logging.warning(f"Ungültiges Film-Element in Filmsammlung gefunden: {li.prettify()}")
+                    # Logge das ungültige Element auf DEBUG-Ebene, da es kein Film-Link ist, aber nicht unbedingt ein Fehler
+                    logging.debug(f"Unerwartetes/ungültiges li-Element in Filmsammlung gefunden (kein gültiger Link): {li.prettify()}")
                     global_stats["failed_items_details"].append({
                         "type": "invalid_movie_element",
-                        "series": serien_Name, 
+                        "series": serien_Name,
                         "url": full_movie_collection_url,
                         "element_html": li.prettify(),
                         "error": "Film-Element ohne gültigen Link/Titel."
@@ -625,8 +647,7 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
             
             if not tasks:
                 logging.info(f"Alle Filme für {serien_Name} bereits vorhanden oder keine neuen gefunden.")
-                movie_collection_data["movies"] = existing_movies # Füge bestehende hinzu
-                return movie_collection_data
+                return existing_movies # Füge bestehende hinzu
 
             all_movie_results = await asyncio.gather(*tasks, return_exceptions=True)
             
@@ -634,41 +655,40 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
             failed_fetches = 0
             temp_movie_results = []
 
+            # Nun iteriere unter Verwendung des Index von valid_movies_to_process und all_movie_results
             for i, result in enumerate(all_movie_results):
-                # Versuche, den Filmtitel zu verwenden, sonst den Index
-                movie_identifier = (result.get('movie_title') if isinstance(result, dict) else None) or f"Film {i+1}"
+                # Rufe die ursprünglichen Filminformationen mit demselben Index ab
+                original_movie_info = valid_movies_to_process[i]
+                movie_title = original_movie_info["movie_title"]
+                full_movie_url = original_movie_info["movie_url"]
 
                 if isinstance(result, Exception):
-                    logging.error(f"Fehler bei Film '{movie_identifier}' für {serien_Name}: {result}")
+                    logging.error(f"Fehler bei Film '{movie_title}' für {serien_Name}: {result}")
                     failed_fetches += 1
+                    global_stats["failed_items_details"].append({
+                        "type": "stream_link_fetch_error_movie",
+                        "series": serien_Name,
+                        "item_type": "movie",
+                        "item_identifier": movie_title,
+                        "url": full_movie_url,
+                        "error": str(result)
+                    })
                 elif result and (result["primary_link"] or result["vidoza_link"] or result["voe_link"]):
-                    # Finde den originalen a_tag, um movie_title und movie_url_suffix zu bekommen
-                    # Dies ist etwas umständlich, da wir die Tasks nicht direkt mit den Ursprungsdaten verknüpft haben.
-                    # Eine bessere Lösung wäre, die movie_title und movie_url_suffix direkt in den Task zu packen.
-                    # Für jetzt nehmen wir an, dass die Reihenfolge der Ergebnisse der Reihenfolge der Tasks entspricht.
-                    original_li = movie_li_elements[i] # Annahme: Reihenfolge bleibt gleich
-                    original_a_tag = original_li.find('a')
-                    if original_a_tag:
-                        movie_title = original_a_tag.get_text(strip=True)
-                        movie_url_suffix = original_a_tag.get('href')
-                        temp_movie_results.append({
-                            "movie_title": movie_title,
-                            "movie_url": f"{BASE_URL}{movie_url_suffix}",
-                            "stream_links": result
-                        })
-                        successful_fetches += 1
-                    else:
-                        logging.warning(f"Konnte Original-a-Tag für Film {movie_identifier} nicht finden.")
-                        failed_fetches += 1
+                    temp_movie_results.append({
+                        "movie_title": movie_title,
+                        "movie_url": full_movie_url,
+                        "stream_links": result
+                    })
+                    successful_fetches += 1
                 else:
-                    logging.warning(f"Film '{movie_identifier}' für {serien_Name}: Keine Links gefunden (Fallback).")
+                    logging.warning(f"Film '{movie_title}' für {serien_Name}: Keine Links gefunden (Fallback).")
                     failed_fetches += 1 
                     global_stats["failed_items_details"].append({
                         "type": "no_stream_links_found_fallback_movie",
                         "series": serien_Name, 
                         "item_type": "movie",
-                        "item_identifier": movie_identifier,
-                        "url": full_movie_collection_url, # URL der Filmsammlung, nicht des einzelnen Films
+                        "item_identifier": movie_title,
+                        "url": full_movie_url, # URL des einzelnen Films
                         "error": "Keine bevorzugten Streaming-Links (VOE/Vidoza) gefunden (Fallback)"
                     })
 
@@ -677,7 +697,8 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
             # Kombiniere bestehende und neu gefundene Filme
             combined_movies = existing_movies + temp_movie_results
             # Sortiere die Filme nach Titel oder einer anderen Logik, falls nötig
-            movie_collection_data["movies"] = sorted(combined_movies, key=lambda x: x.get('movie_title', ''))
+            movies = sorted(combined_movies, key=lambda x: x.get('movie_title', ''))
+            return movies
 
         except aiohttp.ClientError as e:
             error_type = "network_error_movie_collection"
@@ -689,6 +710,7 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
                 "url": full_movie_collection_url,
                 "error": str(e)
             })
+            return []
         except asyncio.TimeoutError:
             error_type = "timeout_error_movie_collection"
             error_msg = f"Timeout beim Abrufen der Filmsammlung {full_movie_collection_url} für {serien_Name}."
@@ -699,6 +721,7 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
                 "url": full_movie_collection_url,
                 "error": "Timeout"
             })
+            return []
         except Exception as e:
             error_type = "parsing_error_movie_collection"
             error_msg = f"FEHLER beim Parsen der Filmsammlung {full_movie_collection_url} für {serien_Name}: {e}"
@@ -709,11 +732,8 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
                 "url": full_movie_collection_url,
                 "error": str(e)
             })
+            return []
     
-    logging.info(f"Filmsammlung für {serien_Name} abgeschlossen.")
-    return movie_collection_data
-
-
 async def process_single_series(serie_name_raw: str, current_series_index: int, total_series_count: int, existing_series_data: dict = None):
     """
     Verarbeitet eine einzelne TV-Serie: sammelt alle Staffeln und Episodenlinks, sowie Filmlinks.
@@ -731,18 +751,21 @@ async def process_single_series(serie_name_raw: str, current_series_index: int, 
     # Initialisiere series_data mit vorhandenen Daten oder als neue Struktur
     series_data = existing_series_data if existing_series_data is not None else {
         "series_name": serie_name_raw,
-        "seasons_and_movies": [] # Neue Liste für Staffeln und Filme
+        "base_url": "", # Neu hinzugefügt: Basis-URL der Serie
+        "seasons": [], # Separate Liste für Staffeln
+        "film": []     # Separate Liste für Filme
     }
     
     try:
         serie_name_formatted = serie_name_raw.strip().replace(" ", "-").lower()
+        initial_series_url = f"{BASE_URL}/serie/stream/{serie_name_formatted}/staffel-1/episode-1"
+        series_data["base_url"] = initial_series_url # Setze die base_url
         
         logging.info(f"--- Starte Verarbeitung für Serie {current_series_index}/{total_series_count}: {serie_name_raw} ---")
         
         # --- Gesamtstruktur der Serie (Staffeln und Filme) abrufen ---
         # Erstelle eine temporäre Session für diese einzelne Anfrage
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
-            initial_series_url = f"{BASE_URL}/serie/stream/{serie_name_formatted}/staffel-1/episode-1"
             # get_series_structure_async gibt eine Liste von Struktur-Objekten zurück
             series_structure = await get_series_structure_async(session, initial_series_url, serie_name_raw)
         
@@ -762,10 +785,9 @@ async def process_single_series(serie_name_raw: str, current_series_index: int, 
             if item['type'] == 'season':
                 season = item['number']
                 # Prüfen, ob diese Staffel bereits in den vorhandenen Daten existiert
-                existing_season_data = next((s for s in series_data["seasons_and_movies"] if s.get('type') == 'season' and s.get('season_number') == season), None)
+                existing_season_data = next((s for s in series_data["seasons"] if s.get('season_number') == season), None)
                 
                 current_season_data = {
-                    "type": "season",
                     "season_number": season,
                     "episode_links": []
                 }
@@ -776,13 +798,13 @@ async def process_single_series(serie_name_raw: str, current_series_index: int, 
                     logging.info(f"Staffel {season} für {serie_name_raw} bereits teilweise verarbeitet ({len(current_season_data['episode_links'])} Episoden vorhanden). Versuche fehlende Episoden zu finden.")
                 else:
                     # Wenn die Staffel neu ist, füge sie zur Liste hinzu
-                    series_data["seasons_and_movies"].append(current_season_data)
+                    series_data["seasons"].append(current_season_data)
                 
                 # get_episode_url_per_season aufrufen und vorhandene Episodenlinks übergeben
                 updated_episode_links = await get_episode_url_per_season(
                     serie_name_formatted, 
                     season, 
-                    current_series_index, # Korrigiert: Entfernt len(series_structure)
+                    current_series_index, 
                     total_series_count,
                     current_season_data["episode_links"] # Übergabe der bereits vorhandenen Links
                 )
@@ -790,41 +812,22 @@ async def process_single_series(serie_name_raw: str, current_series_index: int, 
                 
             elif item['type'] == 'movie_collection':
                 movie_collection_url_suffix = item['url_suffix']
-                # Prüfen, ob diese Filmsammlung bereits in den vorhandenen Daten existiert
-                existing_movie_collection_data = next((s for s in series_data["seasons_and_movies"] if s.get('type') == 'movie_collection' and s.get('collection_title') == 'Filme'), None) # Annahme: nur eine Filmsammlung namens "Filme"
                 
-                current_movies_list = []
-                if existing_movie_collection_data:
-                    current_movies_list = existing_movie_collection_data.get('movies', [])
-                    logging.info(f"Filmsammlung für {serie_name_raw} bereits teilweise verarbeitet ({len(current_movies_list)} Filme vorhanden). Versuche fehlende Filme zu finden.")
-                else:
-                    # Wenn die Filmsammlung neu ist, füge sie zur Liste hinzu
-                    # Wir fügen einen leeren Platzhalter hinzu, der später gefüllt wird
-                    new_movie_collection_entry = {
-                        "type": "movie_collection",
-                        "collection_title": "Filme",
-                        "movies": []
-                    }
-                    series_data["seasons_and_movies"].append(new_movie_collection_entry)
-                    existing_movie_collection_data = new_movie_collection_entry # Referenz aktualisieren
-
                 # get_movie_collection_details_async aufrufen
-                updated_movie_collection_data = await get_movie_collection_details_async(
+                # existing_series_data['film'] enthält die bereits vorhandenen Filme
+                updated_movie_list = await get_movie_collection_details_async(
                     serie_name_formatted, 
                     movie_collection_url_suffix, 
                     current_series_index, 
                     total_series_count,
-                    current_movies_list # Übergabe der bereits vorhandenen Filme
+                    series_data["film"] # Übergabe der bereits vorhandenen Filme
                 )
-                # Aktualisiere den 'movies'-Schlüssel im bestehenden oder neuen Eintrag
-                if existing_movie_collection_data:
-                    existing_movie_collection_data['movies'] = updated_movie_collection_data['movies']
-                else: # Dies sollte nicht passieren, da wir es oben hinzugefügt haben
-                    series_data["seasons_and_movies"].append(updated_movie_collection_data)
+                series_data["film"] = updated_movie_list # Aktualisiere die Film-Liste der Serie
 
-        # Sortiere die gesamte Liste seasons_and_movies, um Staffeln und Filme in der richtigen Reihenfolge zu halten
-        # Sortiere zuerst nach Typ (Staffeln vor Filmen), dann nach Staffelnummer
-        series_data["seasons_and_movies"].sort(key=lambda x: (0 if x['type'] == 'season' else 1, x.get('season_number', float('inf'))))
+        # Sortiere die Staffeln nach ihrer Nummer
+        series_data["seasons"].sort(key=lambda x: x.get('season_number', float('inf')))
+        # Sortiere die Filme nach Titel
+        series_data["film"].sort(key=lambda x: x.get('movie_title', ''))
             
         logging.info(f"--- Alle Staffeln und Filme für {serie_name_raw} (Serie {current_series_index}/{total_series_count}) erfolgreich erfasst (oder teilweise erfasst). ---")
         global_stats["total_series_processed_successfully"] += 1
