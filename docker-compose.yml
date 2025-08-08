@@ -58,32 +58,32 @@ services:
       start_period: 20s
 
   # Dein Python-Anwendungs-Container
-  video-downloader-app:
-    build:
-      context: /home/woodly/Coding/AI-SerienDownlaod
-      dockerfile: ./docker/python-app/Dockerfile
-    image: seriendownloader-app:latest
-    platform: linux/arm64
-    container_name: seriendownloader-app
-    volumes:
-      - ./downloads:/app/Folgen
-      - ./downloads/logs:/app/Logs
-      - ./app:/app/src
-    depends_on:
-      selenium-chromium:
-        condition: service_healthy
-      pihole:
-        condition: service_healthy
-    environment:
-      - PYTHONUNBUFFERED=1
-      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
-      - TS_DOWNLOAD_THREADS=10
-      - Agent_Name=Agent_01
-    command: ["python", "/app/src/downloadManager.py", "Agent01", "https://jilliandescribecompany.com/e/fcbm6izr3x5b", "/app/Folgen", "--proxyAddresse=socks4://65.109.92.51:19952", "--no-headless"]
-    networks:
-      pihole_network:
-    dns:
-      - 172.20.0.100
+#  video-downloader-app:
+#    build:
+#      context: /home/woodly/Coding/AI-SerienDownlaod
+#      dockerfile: ./docker/python-app/Dockerfile
+#    image: seriendownloader-app:latest
+#    platform: linux/arm64
+#    container_name: seriendownloader-app
+#    volumes:
+#      - ./downloads:/app/Folgen
+#      - ./downloads/logs:/app/Logs
+#      - ./app:/app/src
+#    depends_on:
+#      selenium-chromium:
+#        condition: service_healthy
+#      pihole:
+#        condition: service_healthy
+#    environment:
+#      - PYTHONUNBUFFERED=1
+#      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
+#      - TS_DOWNLOAD_THREADS=10
+#      - Agent_Name=Agent_01
+#    command: ["python", "/app/src/downloadManager.py", "Agent01", "https://jilliandescribecompany.com/e/fcbm6izr3x5b", "/app/Folgen", "--proxyAddresse=socks4://65.109.92.51:19952", "--no-headless"]
+#    networks:
+#      pihole_network:
+#    dns:
+#      - 172.20.0.100#
 
   # Dein Python-Anwendungs-Container
   video-downloader-app02:
@@ -107,7 +107,7 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=10
       - Agent_Name=Agent_02
-    command: ["python", "/app/src/downloadManager.py", "Agent02", "https://186.2.175.5/redirect/17066566",  "/app/Folgen/test/", "--no-headless"]
+    command: ["python", "/app/src/downloader/VOE.py", "Agent02", "https://186.2.175.5/redirect/17066566",  "/app/Folgen/test/", "--no-headless"]
     networks:
       pihole_network:
     dns:
