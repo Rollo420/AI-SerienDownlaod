@@ -79,7 +79,7 @@ services:
       - PYTHONUNBUFFERED=1
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=4
-    command: ["python", "/app/src/downloadManager.py", "https://jilliandescribecompany.com/e/1ueyzv2qii6r", "/app/Folgen", "--no-headless"]
+    command: ["python", "/app/src/downloadManager.py", "https://jilliandescribecompany.com/e/kbp2tjivtgrj", "/app/Folgen", "--no-headless"]
     networks:
       pihole_network:
     dns:
@@ -105,7 +105,7 @@ services:
       - PYTHONUNBUFFERED=1
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=4
-    command: ["python", "/app/src/downloadManager.py", "https://s.to/redirect/18875181", "/app/Folgen", "--no-headless"]
+    command: ["python", "/app/src/downloadManager.py", "https://jilliandescribecompany.com/e/kbp2tjivtgrj", "/app/Folgen", "--no-headless"]
     networks:
       pihole_network:
     dns:

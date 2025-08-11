@@ -94,9 +94,11 @@ services:
     platform: linux/arm64
     container_name: seriendownloader-app02
     volumes:
-      - ./downloads:/app/Folgen
+      - ./downloads/serien:/app/serien
       - ./downloads/logs:/app/Logs
       - ./app:/app/src
+      - ./UnitTest/Subprocess:/app/src/UnitTest/Subprocess
+      - ./UnitTest/Subprocess/all_series_data.json:/app/src/UnitTest/Subprocess/all_series_data.json
     depends_on:
       selenium-chromium:
         condition: service_healthy
@@ -107,7 +109,7 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
       - TS_DOWNLOAD_THREADS=10
       - Agent_Name=Agent_02
-    command: ["python", "/app/src/downloader/VOE.py", "Agent02", "https://186.2.175.5/redirect/17066566",  "/app/Folgen/test/", "--no-headless"]
+    command: ["python", "/app/src/UnitTest/Subprocess/startEeasySubprocess.py"]
     networks:
       pihole_network:
     dns:
