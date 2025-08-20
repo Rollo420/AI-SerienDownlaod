@@ -181,7 +181,7 @@ def stream_episode(driver, url, output_dir):
         EC.presence_of_element_located((By.TAG_NAME, "body"))
     )
     print("Seite geladen. Suche nach Popups...")
-    close_popups(driver)
+    #close_popups(driver)
 
     video_start_selectors = [
         "button[aria-label='Play']",
@@ -238,7 +238,7 @@ def stream_episode(driver, url, output_dir):
         if time.time() - wait_start_time > 15 and not video_active:
              print("Video startet nicht innerhalb von 15 Sekunden. Versuche, die Seite neu zu laden.")
              driver.refresh()
-             close_popups(driver)
+             #close_popups(driver)
              wait_start_time = time.time()
         
         time.sleep(2)

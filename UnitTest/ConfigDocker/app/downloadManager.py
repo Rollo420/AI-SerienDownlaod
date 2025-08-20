@@ -16,31 +16,52 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException,
 import concurrent.futures
 import httpx
 from bs4 import BeautifulSoup
+import logging
 
 # --- Konfiguration ---
 DEFAULT_TIMEOUT = 30 # Timeout für das Warten auf Elemente
 
+# --- Logging Setup ---
+LOGFILE_PATH = "/app/Folgen/seriendownloader.log"  # Bleibt so, da /app/Folgen auf den Host gemountet ist
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        logging.FileHandler(LOGFILE_PATH, encoding="utf-8"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger("seriendownloader")
+
 # --- Hilfsfunktionen ---
+
+def log(msg, level="info"):
+    if level == "error":
+        logger.error(msg)
+    elif level == "warning":
+        logger.warning(msg)
+    else:
+        logger.info(msg)
 
 def download_file(url, filename, directory):
     """Lädt eine Datei herunter und speichert sie im angegebenen Verzeichnis."""
     filepath = os.path.join(directory, filename)
     os.makedirs(directory, exist_ok=True)
     if os.path.exists(filepath):
-        # print(f"Datei '{filename}' existiert bereits in '{directory}'. Überspringe Download.") # Weniger Logs für Threads
+        log(f"Datei '{filename}' existiert bereits in '{directory}'. Überspringe Download.")
         return filepath
 
-    # print(f"Lade '{filename}' von '{url}' herunter...") # Weniger Logs für Threads
+    log(f"Lade '{filename}' von '{url}' herunter...")
     try:
         response = requests.get(url, stream=True)
         response.raise_for_status()
         with open(filepath, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
-        # print(f"'{filename}' erfolgreich heruntergeladen nach '{filepath}'.") # Weniger Logs für Threads
+        log(f"'{filename}' erfolgreich heruntergeladen nach '{filepath}'.")
         return filepath
     except requests.exceptions.RequestException as e:
-        print(f"FEHLER beim Herunterladen von '{filename}': {e}")
+        log(f"FEHLER beim Herunterladen von '{filename}': {e}", "error")
         return None
 
 def find_ffmpeg_executable():
@@ -50,49 +71,80 @@ def find_ffmpeg_executable():
     """
     try:
         subprocess.run(['which', 'ffmpeg'], check=True, capture_output=True, text=True)
-        print("FFmpeg im System-PATH gefunden.")
+        log("FFmpeg im System-PATH gefunden.")
         return 'ffmpeg'
     except subprocess.CalledProcessError:
-        print("FEHLER: FFmpeg wurde nicht gefunden. Stellen Sie sicher, dass es im Docker-Container installiert ist.")
+        log("FEHLER: FFmpeg wurde nicht gefunden. Stellen Sie sicher, dass es im Docker-Container installiert ist.", "error")
         return None
+
+def is_valid_ts_file(filepath):
+    """Prüft, ob die Datei wie ein MPEG-TS beginnt (0x47 als erstes Byte)."""
+    try:
+        with open(filepath, "rb") as f:
+            first_byte = f.read(1)
+            return first_byte == b'\x47'
+    except Exception:
+        return False
 
 def merge_ts_files(ts_file_paths, output_filepath, ffmpeg_exec_path):
     """Führt TS-Dateien mit FFmpeg zusammen."""
     if not ffmpeg_exec_path:
-        print("FEHLER: FFmpeg-Executable nicht gefunden. Kann Dateien nicht zusammenführen.")
+        log("FEHLER: FFmpeg-Executable nicht gefunden. Kann Dateien nicht zusammenführen.", "error")
         return False
 
     temp_input_file = os.path.join(os.path.dirname(output_filepath), "input.txt")
     try:
-        with open(temp_input_file, "w", encoding="utf-8") as f:
+        valid_files = []
+        log(f"Erstelle input.txt unter: {temp_input_file}")
+        with open(temp_input_file, "w", newline="\n") as f:
             for p in ts_file_paths:
-                f.write(f"file '{p.replace(os.sep, '/')}'\n")
+                abs_path = os.path.abspath(p)
+                exists = os.path.exists(abs_path)
+                size = os.path.getsize(abs_path) if exists else 0
+                valid_ts = is_valid_ts_file(abs_path) if exists and size > 0 else False
+                log(f"Prüfe Segment: {abs_path} | Existiert: {exists} | Größe: {size} | MPEG-TS: {valid_ts}")
+                if exists and size > 0 and valid_ts:
+                    f.write(f"file '{abs_path.replace(os.sep, '/')}'\n")
+                    valid_files.append(abs_path)
+                else:
+                    log(f"WARNUNG: Segment fehlt, ist leer oder kein gültiges TS-Format: {abs_path}", "warning")
+
+        log("Inhalt von input.txt:")
+        with open(temp_input_file, "r") as f:
+            log(f.read())
+
+        if not valid_files:
+            log("FEHLER: Keine gültigen TS-Dateien zum Zusammenfügen gefunden.", "error")
+            return False
 
         command = [
             ffmpeg_exec_path,
-            "-f", "concat",
-            "-safe", "0",
-            "-i", temp_input_file,
-            "-c", "copy",
-            "-bsf:a", "aac_adtstoasc",
-            output_filepath
+            "-y",                # Überschreibt die Zieldatei ohne Nachfrage
+            "-f", "concat",      # Nutzt das concat-Format für die input.txt
+            "-safe", "0",        # Erlaubt absolute Pfade in input.txt
+            "-i", temp_input_file, # Pfad zur input.txt
+            "-c:v", "copy",      # Kopiert den Videostream unverändert
+            "-c:a", "copy",      # Kopiert den Audiostream unverändert
+            "-bsf:a", "aac_adtstoasc", # Wandelt AAC-Streams korrekt um
+            "-map_metadata", "-1",     # Entfernt Metadaten
+            output_filepath      # Zieldatei
         ]
-        print(f"Führe FFmpeg-Befehl aus: {' '.join(command)}")
-        process = subprocess.run(command, check=True, capture_output=True, text=True, encoding="utf-8")
-        print(f"Alle Segmente erfolgreich zu '{output_filepath}' zusammengeführt.")
-        print("\n--- FFmpeg Standardausgabe ---")
-        print(process.stdout)
+        log(f"Führe FFmpeg-Befehl aus: {' '.join(command)}")
+        process = subprocess.run(command, check=True, capture_output=True, text=True)
+        log(f"Alle Segmente erfolgreich zu '{output_filepath}' zusammengeführt.")
+        log("\n--- FFmpeg Standardausgabe ---")
+        log(process.stdout)
         if process.stderr:
-            print("\n--- FFmpeg Fehler-Ausgabe ---")
-            print(process.stderr)
+            log("\n--- FFmpeg Fehler-Ausgabe ---")
+            log(process.stderr)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"FEHLER beim Zusammenführen mit FFmpeg: {e}")
-        print(f"FFmpeg Stdout: {e.stdout}")
-        print(f"FFmpeg Stderr: {e.stderr}")
+        log(f"FEHLER beim Zusammenführen mit FFmpeg: {e}", "error")
+        log(f"FFmpeg Stdout: {e.stdout}")
+        log(f"FFmpeg Stderr: {e.stderr}")
         return False
     except Exception as e:
-        print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
+        log(f"Ein unerwarteter Fehler ist aufgetreten: {e}", "error")
         return False
     finally:
         if os.path.exists(temp_input_file):
@@ -119,14 +171,12 @@ def get_unique_directory_name(base_path):
 # --- Browser-Initialisierung ---
 
 def initialize_driver(headless=True):
-    """Initialisiert den Selenium Chrome WebDriver für den Docker-Container."""
     options = Options()
     if headless:
-        print("Starte Chromium im Headless-Modus (im Docker-Container)...")
+        log("Starte Chromium im Headless-Modus (im Docker-Container)...")
         options.add_argument("--headless=new")
     else:
-        print("Starte Chromium im sichtbaren Modus (im Docker-Container via VNC)...")
-
+        log("Starte Chromium im sichtbaren Modus (im Docker-Container via VNC)...")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
@@ -136,19 +186,20 @@ def initialize_driver(headless=True):
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
-    
+    # Adblock Plus Extension laden (Pfad im Container anpassen!)
+    adblock_path = "/app/src/adblockplus.crx"
+    if os.path.exists(adblock_path):
+        options.add_extension(adblock_path)
     try:
-        selenium_hub_url = os.getenv("SELENIUM_HUB_URL", "http://localhost:4444/wd/hub")
+        selenium_hub_url = os.getenv("SELENIUM_HUB_URL", "http://selenium-chromium:4444/wd/hub")
         driver = webdriver.Remote(
             command_executor=selenium_hub_url,
             options=options
         )
-        print(f"Chromium WebDriver erfolgreich mit {selenium_hub_url} verbunden.")
+        log(f"Chromium WebDriver erfolgreich mit {selenium_hub_url} verbunden.")
         return driver
     except WebDriverException as e:
-        print(f"FEHLER beim Initialisieren des WebDriver: {e}")
-        print(f"Stellen Sie sicher, dass der Selenium Docker Container unter {selenium_hub_url} läuft.")
-        print("Überprüfen Sie Ihre docker-compose.yml und die Docker-Logs.")
+        log(f"FEHLER beim Initialisieren des WebDriver: {e}", "error")
         sys.exit(1)
 
 # --- Kernlogik des Download-Managers ---
@@ -167,13 +218,13 @@ def close_popups(driver):
             element = WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
             )
-            print(f"Schließe Popup mit Selektor: {selector}")
+            log(f"Schließe Popup mit Selektor: {selector}")
             driver.execute_script("arguments[0].click();", element)
             time.sleep(1)
         except (TimeoutException, NoSuchElementException):
             pass
         except Exception as e:
-            print(f"Fehler beim Schließen eines Popups ({selector}): {e}")
+            log(f"Fehler beim Schließen eines Popups ({selector}): {e}", "error")
 
 def handle_new_tabs_and_focus(driver, main_window_handle: str):
     """
@@ -182,7 +233,7 @@ def handle_new_tabs_and_focus(driver, main_window_handle: str):
     try:
         handles = driver.window_handles
         if len(handles) > 1:
-            print(
+            log(
                 f"NEUE FENSTER/TABS ERKANNT: {len(handles) - 1} Pop-up(s). Schließe diese..."
             )
             for handle in handles:
@@ -190,15 +241,16 @@ def handle_new_tabs_and_focus(driver, main_window_handle: str):
                     try:
                         driver.switch_to.window(handle)
                         driver.close()
-                        print(f"Pop-up-Tab '{handle}' geschlossen.")
+                        log(f"Pop-up-Tab '{handle}' geschlossen.")
                     except Exception as e:
-                        print(
-                            f"WARNUNG: Konnte Pop-up-Tab '{handle}' nicht schließen: {e}"
+                        log(
+                            f"WARNUNG: Konnte Pop-up-Tab '{handle}' nicht schließen: {e}",
+                            "warning"
                         )
             driver.switch_to.window(main_window_handle)  # Zurück zum Haupt-Tab
             time.sleep(1)  # Kurze Pause nach dem Schließen
     except Exception as e:
-        print(f"FEHLER: Probleme beim Verwalten von Browser-Fenstern: {e}")
+        log(f"FEHLER: Probleme beim Verwalten von Browser-Fenstern: {e}", "error")
 
 
 def get_current_video_progress(driver):
@@ -226,12 +278,12 @@ def get_episode_title(driver) -> str:
         cleaned_title = re.split(r"\||-|–", title)[0].strip()
         return re.sub(r'[<>:"/\\|?*]', "_", cleaned_title)
     except Exception as e:
-        print(f"WARNUNG: Konnte Episodentitel nicht extrahieren: {e}. Verwende Standardtitel.")
+        log(f"WARNUNG: Konnte Episodentitel nicht extrahieren: {e}. Verwende Standardtitel.", "warning")
         return f"video_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
 def clean_filename(filename: str) -> str:
     """Reinigt einen String, um ihn als gültigen Dateinamen zu verwenden."""
-    filename = re.sub(r'[<>:"/\\|?*]', "_", filename)
+    filename = re.sub(r'[<>:"/\\|?*.]', "_", filename)
     filename = filename.strip().replace(" ", "_")
     if filename.lower().endswith(".mp4"):
         filename = filename[:-4]
@@ -239,76 +291,85 @@ def clean_filename(filename: str) -> str:
     
 def stream_episode(driver, url): # output_dir wird jetzt in main gehandhabt
     """Simuliert das Abspielen einer Episode, um TS-URLs zu erfassen."""
-    print(f"\nNavigiere zu: {url}")
+    log(f"\nNavigiere zu: {url}")
     driver.get(url)
     main_window_handle = driver.current_window_handle
 
     WebDriverWait(driver, DEFAULT_TIMEOUT).until(
         EC.presence_of_element_located((By.TAG_NAME, "body"))
     )
-    print("Seite geladen. Suche nach Popups...")
-    close_popups(driver)
-    handle_new_tabs_and_focus(driver, main_window_handle)
+    log("Seite geladen. Suche nach Popups und Overlays...")
+    close_overlays_and_iframes(driver)
+    #close_popups(driver)
+    #handle_new_tabs_and_focus(driver, main_window_handle)
 
     episode_title = get_episode_title(driver)
-    print(f"Erkannter Episodentitel: {episode_title}")
+    log(f"Erkannter Episodentitel: {episode_title}")
 
     video_start_selectors = [
+        "div.a",
+        "video",
+        "div.play-button",
         "button[aria-label='Play']",
         ".jw-icon-playback",
-        "video",
         "button.vjs-big-play-button",
-        "div.play-button"
+        "button[title='Play']",
+        "button[aria-label='Start video']",
+        
     ]
-    
     # --- Try to start video loop ---
     play_attempts = 0
-    max_play_attempts = 5
+    max_play_attempts = 8
     video_started_successfully = False
-    
+
     while play_attempts < max_play_attempts and not video_started_successfully:
         for selector in video_start_selectors:
             try:
-                print(f"Versuch {play_attempts + 1}: Klicke auf Video-Start-Element mit Selektor '{selector}'...")
-                play_button = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
-                )
-                driver.execute_script("arguments[0].click();", play_button)
-                print(f"Video-Start-Element '{selector}' geklickt.")
-                time.sleep(2)
-                handle_new_tabs_and_focus(driver, main_window_handle)
-                
+                # Versuche 2x zu klicken, falls Overlays stören
+                for click_try in range(2):
+                    play_button = WebDriverWait(driver, 5).until(
+                        EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
+                    )
+                    driver.execute_script("arguments[0].click();", play_button)
+                    time.sleep(1)
+                    close_overlays_and_iframes(driver)
+                    # Nach Overlay-Entfernung erneut versuchen, den Play-Button zu klicken
+                    try:
+                        play_button = WebDriverWait(driver, 2).until(
+                            EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
+                        )
+                        driver.execute_script("arguments[0].click();", play_button)
+                        time.sleep(1)
+                    except Exception:
+                        pass
+                time.sleep(1)
                 current_time, duration, paused = get_current_video_progress(driver)
                 if duration > 0 and current_time > 0.1 and not paused:
-                    print(f"Video gestartet: {current_time:.2f}/{duration:.2f} Sekunden.")
                     video_started_successfully = True
                     break
                 elif paused:
-                    print("Video ist noch pausiert nach Klick, versuche Play per JS.")
                     driver.execute_script("document.querySelector('video').play();")
                     time.sleep(1)
                     current_time, duration, paused = get_current_video_progress(driver)
                     if duration > 0 and current_time > 0.1 and not paused:
-                        print(f"Video gestartet per JS: {current_time:.2f}/{duration:.2f} Sekunden.")
                         video_started_successfully = True
                         break
-            except (TimeoutException, NoSuchElementException, ElementClickInterceptedException):
+            except Exception:
                 pass
-            except Exception as e:
-                print(f"Fehler beim Klicken auf Video-Start-Element ({selector}): {e}")
-        
         if not video_started_successfully:
             play_attempts += 1
-            print(f"Video nicht gestartet nach allen Selektoren. Warte 5 Sekunden und versuche erneut (Versuch {play_attempts}/{max_play_attempts}).")
-            time.sleep(5)
-            driver.refresh()
-            close_popups(driver)
-            handle_new_tabs_and_focus(driver, main_window_handle)
-
+            time.sleep(3)
+            # Kein driver.refresh()
+            close_overlays_and_iframes(driver)
     if not video_started_successfully:
-        print("WARNUNG: Konnte Video nach mehreren Versuchen nicht starten. Versuche trotzdem, URLs zu erfassen, aber ohne Gewähr.")
-        
-    print("Starte Überwachung der Videowiedergabe und Netzwerkanfragen bis zum Ende des Videos...")
+        log("WARNUNG: Konnte Video nach mehreren Versuchen nicht starten. Fallback auf JS.", "warning")
+        try:
+            driver.execute_script("document.querySelector('video').play();")
+            time.sleep(2)
+        except Exception:
+            log("Video konnte auch per JS nicht gestartet werden.", "warning")
+
+    log("Starte Überwachung der Videowiedergabe und Netzwerkanfragen bis zum Ende des Videos...")
     ts_urls = set()
     
     last_current_time = 0.0
@@ -322,17 +383,17 @@ def stream_episode(driver, url): # output_dir wird jetzt in main gehandhabt
         current_time, duration, paused = get_current_video_progress(driver)
 
         if duration > 0 and current_time >= duration - 3.0:
-            print(f"Video fast am Ende oder beendet: {current_time:.2f}/{duration:.2f}. Beende Überwachung.")
+            log(f"Video fast am Ende oder beendet: {current_time:.2f}/{duration:.2f}. Beende Überwachung.")
             break
 
         if paused:
-            print(f"Video pausiert bei {current_time:.2f}/{duration:.2f} Sekunden, versuche es zu starten.")
+            log(f"Video pausiert bei {current_time:.2f}/{duration:.2f} Sekunden, versuche es zu starten.")
             driver.execute_script("document.querySelector('video').play();")
             time.sleep(1)
 
         if current_time == last_current_time and current_time > 0.1:
             if time.time() - stalled_check_time > stalled_timeout:
-                print(f"Video hängt fest bei {current_time:.2f}/{duration:.2f} Sekunden seit {stalled_timeout} Sekunden. Beende Überwachung.")
+                log(f"Video hängt fest bei {current_time:.2f}/{duration:.2f} Sekunden seit {stalled_timeout} Sekunden. Beende Überwachung.")
                 break
         else:
             stalled_check_time = time.time()
@@ -340,7 +401,7 @@ def stream_episode(driver, url): # output_dir wird jetzt in main gehandhabt
         last_current_time = current_time
 
         if duration == 0 and time.time() - overall_monitoring_start_time > max_monitoring_time_if_duration_unknown:
-            print(f"WARNUNG: Videodauer nicht verfügbar und Überwachung läuft seit über {max_monitoring_time_if_duration_unknown/3600:.1f} Stunden. Beende Überwachung.")
+            log(f"WARNUNG: Videodauer nicht verfügbar und Überwachung läuft seit über {max_monitoring_time_if_duration_unknown/3600:.1f} Stunden. Beende Überwachung.", "warning")
             break
 
         ts_urls.update(extract_segment_urls_from_performance_logs(driver))
@@ -352,17 +413,17 @@ def stream_episode(driver, url): # output_dir wird jetzt in main gehandhabt
                 ts_urls.update(extract_segment_urls_from_performance_logs(driver))
                 driver.switch_to.default_content()
             except Exception as e:
-                print(f"FEHLER beim Wechseln zu oder Überwachen von Iframe {i+1}: {e}")
+                log(f"FEHLER beim Wechseln zu oder Überwachen von Iframe {i+1}: {e}", "error")
                 driver.switch_to.default_content()
 
         time.sleep(3)
-        handle_new_tabs_and_focus(driver, main_window_handle)
+        #handle_new_tabs_and_focus(driver, main_window_handle)
 
-    print(f"Überwachung beendet. Insgesamt {len(ts_urls)} einzigartige TS-URLs gefunden.")
+    log(f"Überwachung beendet. Insgesamt {len(ts_urls)} einzigartige TS-URLs gefunden.")
 
     if not ts_urls:
-        print("KEINE TS-URLs gefunden. Die Seite hat möglicherweise keine TS-Streams oder ein Problem ist aufgetreten.")
-        return False, episode_title, [] # Rückgabe von False und leere Liste
+        log("KEINE TS-URLs gefunden. Die Seite hat möglicherweise keine TS-Streams oder ein Problem ist aufgetreten.", "error")
+        return False, episode_title, [], "", "" # Rückgabe von leeren Listen/Strings
 
     sorted_ts_urls = sorted(list(ts_urls))
     
@@ -393,10 +454,40 @@ def extract_segment_urls_from_performance_logs(driver):
             ):
                 found_urls.add(url)
     except WebDriverException as e:
-        print(f"Fehler beim Abrufen der Performance-Logs aus aktuellem Kontext: {e}")
+        log(f"Fehler beim Abrufen der Performance-Logs aus aktuellem Kontext: {e}", "error")
     except Exception as e:
-        print(f"Ein unerwarteter Fehler beim Extrahieren von URLs: {e}")
+        log(f"Ein unerwarteter Fehler beim Extrahieren von URLs: {e}", "error")
     return found_urls
+
+def close_overlays_and_iframes(driver):
+    """
+    Entfernt alle <body>-Elemente außer dem Haupt-Body und schließt alle iframes,
+    die als Overlay oder über dem Video liegen.
+    """
+    try:
+        # Entferne alle <body>-Elemente außer dem Haupt-Body
+        bodies = driver.find_elements(By.TAG_NAME, "body")
+        main_body = driver.execute_script("return document.body")
+        for body in bodies:
+            if body != main_body:
+                try:
+                    driver.execute_script("arguments[0].remove();", body)
+                    log("Entferne Overlay-Body-Element.")
+                except Exception as e:
+                    log(f"Fehler beim Entfernen eines Body-Overlays: {e}", "warning")
+
+        # Entferne alle iframes, die als Overlay fungieren oder über dem Video liegen
+        iframes = driver.find_elements(By.TAG_NAME, "iframe")
+        for iframe in iframes:
+            try:
+                style = driver.execute_script("return arguments[0].getAttribute('style') || '';", iframe)
+                if "z-index" in style or "fixed" in style or "absolute" in style or "width: 100%" in style or "height: 100%" in style:
+                    driver.execute_script("arguments[0].remove();", iframe)
+                    log("Entferne Overlay-iframe.")
+            except Exception as e:
+                log(f"Fehler beim Entfernen eines Overlay-iframe: {e}", "warning")
+    except Exception as e:
+        log(f"Fehler beim Entfernen von Overlays und iframes: {e}", "error")
 
 # --- Hauptausführung ---
 
@@ -405,99 +496,86 @@ def main():
     parser.add_argument("url", help="Die URL des Videos/der Episode zum Streamen.")
     parser.add_argument("output_path", help="Der Pfad, in dem das Video gespeichert werden soll (dies wird der Serien-Basisordner).")
     parser.add_argument("--no-headless", action="store_true", help="Deaktiviert den Headless-Modus (nur für Debugging).")
-
     args = parser.parse_args()
-
     driver = None
     try:
         driver = initialize_driver(headless=not args.no_headless)
-    
-        # Basispfad für alle Serien-Downloads
         base_series_output_path = os.path.abspath(args.output_path)
         os.makedirs(base_series_output_path, exist_ok=True)
-        print(f"Serien-Basisordner: {base_series_output_path}")
-
-        # Rufe stream_episode auf, um URLs und Titel zu erhalten
+        log(f"Serien-Basisordner: {base_series_output_path}")
         success, episode_title, sorted_ts_urls = stream_episode(driver, args.url)
         
         if success and sorted_ts_urls:
-            print("\nDownload der TS-URLs erfolgreich abgeschlossen!")
-            
-            # 1. Erstelle den eindeutigen Episodenordner
+            log("\nDownload der TS-URLs erfolgreich abgeschlossen!")
             cleaned_episode_title = clean_filename(episode_title)
             episode_output_dir_base = os.path.join(base_series_output_path, cleaned_episode_title)
             episode_output_dir = get_unique_directory_name(episode_output_dir_base)
             os.makedirs(episode_output_dir, exist_ok=True)
-            print(f"Episodenordner erstellt: {episode_output_dir}")
+            log(f"Episodenordner erstellt: {episode_output_dir}")
 
-            # 2. Definiere den temporären TS-Ordner innerhalb des Episodenordners
             temp_ts_dir = os.path.join(episode_output_dir, "temp_ts")
             os.makedirs(temp_ts_dir, exist_ok=True)
-            print(f"Temporärer TS-Ordner für Segmente: {temp_ts_dir}")
+            log(f"Temporärer TS-Ordner für Segmente: {temp_ts_dir}")
 
-            # 3. Definiere den finalen Video-Pfad
             final_output_video_path = os.path.join(episode_output_dir, f"{cleaned_episode_title}.mp4")
             final_output_video_path = get_unique_filename(final_output_video_path.rsplit('.', 1)[0], "mp4")
 
-
             downloaded_ts_files = []
-            print(f"Lade {len(sorted_ts_urls)} TS-Segmente in '{temp_ts_dir}' herunter...")
-            
-            # *** ThreadPoolExecutor für parallele Downloads ***
-            max_workers = 8
+            log(f"Lade {len(sorted_ts_urls)} TS-Segmente in '{temp_ts_dir}' herunter...")
+
+            # ThreadPoolExecutor für parallele Downloads, Anzahl aus ENV oder Default
+            max_workers = int(os.getenv("TS_DOWNLOAD_THREADS", "8"))
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = []
                 for i, ts_url in enumerate(sorted_ts_urls):
                     segment_filename = f"segment_{i:05d}.ts"
                     futures.append(executor.submit(download_file, ts_url, segment_filename, temp_ts_dir))
-                
                 for i, future in enumerate(concurrent.futures.as_completed(futures)):
                     result_filepath = future.result()
                     if result_filepath:
                         downloaded_ts_files.append(result_filepath)
                     else:
-                        print(f"WARNUNG: Download von Segment {i:05d} fehlgeschlagen.")
-                    
+                        log(f"WARNUNG: Download von Segment {i:05d} fehlgeschlagen.", "warning")
                     if (i + 1) % 10 == 0 or (i + 1) == len(futures):
-                        print(f"    Heruntergeladen: {len(downloaded_ts_files)} von {len(sorted_ts_urls)} Segmenten...")
+                        log(f"    Heruntergeladen: {len(downloaded_ts_files)} von {len(sorted_ts_urls)} Segmenten...")
 
             if not downloaded_ts_files:
-                print("FEHLER: Keine TS-Segmente erfolgreich heruntergeladen. Kann nicht zusammenführen.")
+                log("FEHLER: Keine TS-Segmente erfolgreich heruntergeladen. Kann nicht zusammenführen.", "error")
             else:
                 ffmpeg_executable = find_ffmpeg_executable()
                 if ffmpeg_executable:
-                    print("Starte Zusammenführung der TS-Dateien...")
+                    log("Starte Zusammenführung der TS-Dateien...")
                     downloaded_ts_files.sort()
                     if merge_ts_files(downloaded_ts_files, final_output_video_path, ffmpeg_executable):
-                        print("Bereinige temporäre TS-Dateien...")
+                        log("Bereinige temporäre TS-Dateien...")
                         for f in downloaded_ts_files:
                             try:
                                 os.remove(f)
                             except OSError as e:
-                                print(f"Fehler beim Löschen von temporärer Datei {f}: {e}")
+                                log(f"Fehler beim Löschen von temporärer Datei {f}: {e}", "error")
                         try:
                             os.rmdir(temp_ts_dir)
-                            print(f"Temporäres Verzeichnis '{temp_ts_dir}' erfolgreich gelöscht.")
+                            log(f"Temporäres Verzeichnis '{temp_ts_dir}' erfolgreich gelöscht.")
                         except OSError as e:
-                            print(f"Fehler beim Löschen des temporären Verzeichnisses {temp_ts_dir}: {e}")
-                        print("\nDownload- und Zusammenführungsprozess erfolgreich abgeschlossen!")
+                            log(f"Fehler beim Löschen des temporären Verzeichnisses {temp_ts_dir}: {e}", "error")
+                        log("\nDownload- und Zusammenführungsprozess erfolgreich abgeschlossen!")
                     else:
-                        print("\nZusammenführung der TS-Dateien fehlgeschlagen.")
-                        print(f"Temporäre TS-Dateien verbleiben in: {temp_ts_dir}")
+                        log("\nZusammenführung der TS-Dateien fehlgeschlagen.", "error")
+                        log(f"Temporäre TS-Dateien verbleiben in: {temp_ts_dir}")
                 else:
-                    print("\nFFmpeg ist nicht verfügbar. Die TS-Dateien wurden heruntergeladen, aber nicht zusammengeführt.")
-                    print(f"Temporäre TS-Dateien befinden sich in: {temp_ts_dir}")
-                    print(f"Du kannst diese Dateien manuell mit FFmpeg zusammenführen, z.B. so:")
-                    print(f"ffmpeg -f concat -safe 0 -i {temp_ts_dir}/input.txt -c copy {final_output_video_path}")
-                    print(f"Wobei {temp_ts_dir}/input.txt eine Liste der TS-Dateien im Format 'file 'segment_0000.ts'' enthält.")
+                    log("\nFFmpeg ist nicht verfügbar. Die TS-Dateien wurden heruntergeladen, aber nicht zusammengeführt.")
+                    log(f"Temporäre TS-Dateien befinden sich in: {temp_ts_dir}")
+                    log(f"Du kannst diese Dateien manuell mit FFmpeg zusammenführen, z.B. so:")
+                    log(f"ffmpeg -f concat -safe 0 -i {temp_ts_dir}/input.txt -c copy {final_output_video_path}")
+                    log(f"Wobei {temp_ts_dir}/input.txt eine Liste der TS-Dateien im Format 'file 'segment_0000.ts'' enthält.")
         else:
-            print("\nDownload der TS-URLs fehlgeschlagen oder unvollständig.")
+            log("\nDownload der TS-URLs fehlgeschlagen oder unvollständig.", "error")
 
     except Exception as e:
-        print(f"Ein kritischer Fehler ist aufgetreten: {e}")
+        log(f"Ein kritischer Fehler ist aufgetreten: {e}", "error")
     finally:
         if driver:
-            print("Schließe den Browser...")
+            log("Schließe den Browser...")
             driver.quit()
 
 if __name__ == "__main__":

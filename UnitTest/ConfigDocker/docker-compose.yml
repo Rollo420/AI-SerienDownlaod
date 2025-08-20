@@ -1,4 +1,5 @@
 services:
+<<<<<<< HEAD
   # Pi-hole Dienst (wieder aktiviert)
   pihole:
     image: pihole/pihole:latest
@@ -109,3 +110,103 @@ networks:
         - subnet: 172.20.0.0/24
 
 
+=======
+  # Selenium Standalone Chromium
+  selenium-chromium:
+    image: selenium/standalone-chromium:latest
+    platform: linux/arm64
+    container_name: selenium-chromium
+    ports:
+      - "4444:4444" # Host-Port 4444 -> Container-Port 4444
+      - "7900:7900" # Host-Port 7901 -> Container-Port 7900
+    shm_size: "2g" # Erhöht den Shared Memory für den Browser (kritisch für Stabilität)
+    environment:
+      - SE_VNC_PASSWORD=secret # WICHTIG: ÄNDERE DIESES PASSWORT!
+      - SE_NODE_MAX_SESSIONS=4 # Jetzt 4 parallele Sessions
+      - SE_START_XVFB=true # Essentiell für den Headless-Modus
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+    networks:
+      - pihole_network
+    restart: unless-stopped
+    healthcheck: # Überprüft die Verfügbarkeit des Selenium Chromiums
+      test: ["CMD", "curl", "-f", "http://localhost:4444"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    dns:
+      - 172.20.0.100
+
+  # Pi-hole DNS-Server
+  pihole:
+    image: pihole/pihole:latest
+    platform: linux/arm64
+    container_name: pihole
+    hostname: pihole
+    ports:
+      - "5353:53/tcp" # DNS
+      - "5353:53/udp" # DNS
+      - "8081:80/tcp" # Webinterface
+    environment:
+      TZ: 'Europe/Berlin'
+      WEBPASSWORD: '0487146094jJ!!'
+      DNSMASQ_LISTENING: all
+      PIHOLE_DNS_: 8.8.8.8;8.8.4.4
+      PIHOLE_ADLISTS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts https://mirror1.malwaredomains.com/files/justdomains https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt"
+    volumes:
+      - pihole_config:/etc/pihole/
+      - pihole_dnsmasq:/etc/dnsmasq.d/
+      - ./PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
+    cap_add:
+      - NET_ADMIN
+    networks:
+      pihole_network:
+        ipv4_address: 172.20.0.100 # Feste IP-Adresse für Pi-hole im Netzwerk
+    restart: unless-stopped
+    healthcheck: # Überprüft die Verfügbarkeit von Pi-hole
+      test: ["CMD", "curl", "-f", "http://localhost/admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Dein Python-Anwendungs-Container
+  video-downloader-app:
+    build:
+      context: /home/woodly/Coding/AI-SerienDownlaod
+      dockerfile: UnitTest/ConfigDocker/docker/python-app/Dockerfile
+    image: seriendownloader-app:latest
+    platform: linux/arm64
+    container_name: seriendownloader-app
+    volumes:
+      - /home/woodly/Coding/AI-SerienDownlaod/downloads:/app/Folgen
+      - /home/woodly/Coding/AI-SerienDownlaod/UnitTest/ConfigDocker/app:/app/src
+    depends_on:
+      selenium-chromium:
+        condition: service_healthy
+      pihole:
+        condition: service_healthy
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub
+      - TS_DOWNLOAD_THREADS=4
+    command: ["python", "/app/src/downloadManager.py", "https://jilliandescribecompany.com/e/1ueyzv2qii6r", "/app/Folgen", "--no-headless"]
+    networks:
+      pihole_network:
+    dns:
+      - 172.20.0.100
+
+# Definition der Netzwerke
+networks:
+  pihole_network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+# Definition der Volumes für persistente Daten
+volumes:
+  pihole_config:
+  pihole_dnsmasq:
+  downloader_data: # Dieses Volume wird nicht direkt in docker-compose verwendet, aber kann für zukünftige Erweiterungen nützlich sein
+>>>>>>> 072f06180c945e1a01b20c42fd31333929e23caf
