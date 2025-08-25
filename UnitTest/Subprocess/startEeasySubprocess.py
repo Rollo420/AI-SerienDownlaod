@@ -42,7 +42,6 @@ async def create_task(agent_name, data):
         agent_name,
         data["episode_links"]["primary_link"],
         f"/app//serien/{serienTitle}/Season-{data['season_number']}/",
-        "--no-headless",
     )
 async def start_task(agent_name, task):
     print(f"{agent_name}: Waiting for semaphore...")  # Klarere Ausgabe

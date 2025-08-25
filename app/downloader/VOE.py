@@ -108,13 +108,17 @@ def clean_filename(filename: str) -> str:
 class get_m3u8_urls:
     """
     Diese Klasse enthält Methoden zum Extrahieren von M3U8-URLs aus den Performance-Logs
-    und zum Herunterladen der M3U8-Dateien.
+    und zum Herunterladen der M3u8-Dateien.
     """
 
     def __init__(self, driver, output_dir):
         self.output_dir = output_dir
         self.driver = driver
-        self.run = self.find_m3u8_urls()  # Direkt beim Erstellen der Instanz ausführen
+        # Attribute zur Speicherung der Ergebnisse
+        self.m3u8_files_dict = {}
+        self.m3u8_first_filepath = None
+        # Direkt beim Erstellen der Instanz die Methode ausführen
+        self.find_m3u8_urls()
         
     def extract_u3m8_segment_urls_from_performance_logs(self):
         """
@@ -135,7 +139,7 @@ class get_m3u8_urls:
                     or ".mpd" in url
                     or ".m3u8" in url
                     or re.search(r"manifest\.fmp4", url)
-                    or re.search(r"seg-\d+.*\.ts", url) # Neu: Pattern für seg-X-Dateinamen
+                    or re.search(r"seg-\d+.*\.ts", url)
                 ):
                     if not (url.endswith(".m3u8") or url.endswith(".mpd")):
                         found_urls.add(url)
@@ -147,7 +151,8 @@ class get_m3u8_urls:
 
     def find_m3u8_urls(self):
         """
-        Extrahiert alle URLs aus den Performance-Logs, die 'index' und '.m3u8' enthalten.
+        Extrahiert alle URLs aus den Performance-Logs, die 'index' und '.m3u8' enthalten,
+        und speichert sie lokal.
         """
         m3u8_urls = set()
         all_video_resources = self.extract_u3m8_segment_urls_from_performance_logs()
@@ -158,15 +163,15 @@ class get_m3u8_urls:
         if not m3u8_urls:
             log("Es wurden keine passenden M3U8-URLs gefunden.", "warning")
 
-        return self.save_m3u8_files_locally(m3u8_urls)
-        #return list(m3u8_urls)
+        self.m3u8_files_dict, self.m3u8_first_filepath = self.save_m3u8_files_locally(m3u8_urls)
 
     def save_m3u8_files_locally(self, m3u8_urls):
         """
         Lädt den Inhalt jeder M3U8-Datei herunter und speichert ihn lokal.
-        :return: Ein Dictionary mit den Pfaden der heruntergeladenen M3U8-Dateien.
+        Gibt ein Dictionary mit den URL-Pfad-Paaren und den Pfad der ersten Datei zurück.
         """
         local_m3u8_paths = {}
+        first_filepath = None
         os.makedirs(self.output_dir, exist_ok=True)
         log(f"Speichere M3U8-Dateien im Ordner '{self.output_dir}'...")
 
@@ -185,10 +190,14 @@ class get_m3u8_urls:
                     f.write(m3u8_content)
                 local_m3u8_paths[m3u8_url] = filepath
 
+                if first_filepath is None:
+                    first_filepath = filepath
+
                 log(f"M3U8-Datei erfolgreich gespeichert als '{filepath}'")
             except requests.exceptions.RequestException as e:
                 log(f"Fehler beim Herunterladen des M3u8-Inhalts von {m3u8_url}: {e}", "error")
-        return local_m3u8_paths
+
+        return local_m3u8_paths, first_filepath
 
 class driverManager:
     """
@@ -199,10 +208,10 @@ class driverManager:
     def __init__(self, headless=True, proxyAddresse=None):
         self.headless = headless
         self.proxyAddresse = proxyAddresse
+        self.m3u8_first_filepath = None
         self.proxies = self.load_and_filter_proxies() 
         self.driver = self.initialize_driver()
         self.main_window_handle = self.driver.current_window_handle
-        self.u3m8Mangaer = get_m3u8_urls(self.driver, "/app//app/Logs/m3u8_files")
         
         
     def initialize_driver(self):
@@ -282,20 +291,6 @@ class driverManager:
             log("WARNUNG: Keine gültigen Proxys gefunden oder geladen. Der Browser wird ohne Proxy gestartet.","warning")
 
         return proxies_list
-
-
-
-
-
-# --- Browser-Initialisierung ---
-
-
-    
-
-    # --- Kernlogik des Download-Managers ---
-
-    # close_popups wurde in close_overlays_and_iframes integriert
-
 
     def handle_new_tabs_and_focus(self, main_window_handle: str):
         """
@@ -733,8 +728,6 @@ class driverManager:
                                     video_start_selectors_prioritized.remove("video")
                                 video_start_selectors_prioritized.insert(0, "video")
                                 
-                                m3u8_urls = self.u3m8Mangaer.find_m3u8_urls()
-                                
                                 break  # Erfolgreich, innere Schleife beenden
                             elif paused and duration > 0:
                                 log(f"Video pausiert nach 'video'-Klick bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play().")
@@ -870,6 +863,10 @@ class driverManager:
                         break  # Innere Schleife beenden, wenn Video gestartet
 
                 if video_started_successfully:
+                    m3u8_manager = get_m3u8_urls(self.driver, "/app/Logs/m3u8_files")
+                    self.m3u8_files_dict = m3u8_manager.m3u8_files_dict
+                    self.m3u8_first_filepath = m3u8_manager.m3u8_first_filepath
+                    
                     break  # Äußere Schleife beenden, wenn Video gestartet
 
             # Bereinigung nach jedem Schleifendurchlauf der Selektoren
@@ -906,6 +903,7 @@ class driverManager:
 
         while True:
             current_time, duration, paused = self.get_current_video_progress()
+            print(f"Aktuelle Zeit: {current_time}/{duration}", "\r")
 
             if duration > 0 and current_time >= duration - 3.0:
                 log(
@@ -959,7 +957,7 @@ class driverManager:
                 [],
             )  # Keine Selektoren zurückgeben, da sie lokal sind
 
-        sorted_ts_urls = sorted(list(ts_urls))
+        sorted_ts_urls = ts_urls #sorted(list(ts_urls))
 
         return (
             True,
@@ -1019,10 +1017,11 @@ class MergerManager:
     Sie ist so konzipiert, dass sie in einem Docker-Container läuft, in dem FFmpeg bereits installiert ist.
     """
  
-    def __init__(self, ts_file_paths, output_video_path=None):
+    def __init__(self, ts_file_paths, temp_input_file, output_video_path=None):
         self.ffmpeg_exec_path = self.find_ffmpeg_executable()
         self.ts_file_paths = ts_file_paths
         self.output_filepath = output_video_path or os.path.join(os.path.expanduser('~'), 'Downloads')
+        self.temp_input_file = temp_input_file 
         
     
     def find_ffmpeg_executable(self):
@@ -1076,36 +1075,36 @@ class MergerManager:
 
         # Erstelle einen einzigartigen temporären Dateinamen für input.txt
         # Dies verhindert Überschreibungen bei mehreren gleichzeitigen oder aufeinanderfolgenden Sessions
-        temp_input_file = get_unique_filename(
-            os.path.join(ts_files_directory, "ffmpeg_input"), "txt"
-        )
+        #temp_input_file = get_unique_filename(
+        #    os.path.join(ts_files_directory, "ffmpeg_input"), "txt"
+        #)
 
         try:
             valid_files = []
-            log(f"Erstelle input.txt unter: {temp_input_file}")
-            os.makedirs(
-                ts_files_directory, exist_ok=True
-            )  # Sicherstellen, dass der Ordner existiert
-            with open(temp_input_file, "w", newline="\n") as f:
-                for p in self.ts_file_paths:
-                    abs_path = os.path.abspath(p)
-                    exists = os.path.exists(abs_path)
-                    size = os.path.getsize(abs_path) if exists else 0
-                    valid_ts =self. is_valid_ts_file(abs_path) if exists and size > 0 else False
-                    log(
-                        f"Prüfe Segment: {abs_path} | Existiert: {exists} | Größe: {size} | MPEG-TS: {valid_ts}"
-                    )
-                    if exists and size > 0 and valid_ts:
-                        f.write(f"file '{abs_path.replace(os.sep, '/')}'\n")
-                        valid_files.append(abs_path)
-                    else:
-                        log(
-                            f"WARNUNG: Segment fehlt, ist leer oder kein gültiges TS-Format: {abs_path}",
-                            "warning",
-                        )
+            #log(f"Erstelle input.txt unter: {m3u8_filepath}")
+            #os.makedirs(
+            #    ts_files_directory, exist_ok=True
+            #)  # Sicherstellen, dass der Ordner existiert
+            #with open(temp_input_file, "w", newline="\n") as f:
+            #    for p in self.ts_file_paths:
+            #        abs_path = os.path.abspath(p)
+            #        exists = os.path.exists(abs_path)
+            #        size = os.path.getsize(abs_path) if exists else 0
+            #        valid_ts =self. is_valid_ts_file(abs_path) if exists and size > 0 else False
+            #        log(
+            #            f"Prüfe Segment: {abs_path} | Existiert: {exists} | Größe: {size} | MPEG-TS: {valid_ts}"
+            #        )
+            #        if exists and size > 0 and valid_ts:
+            #            f.write(f"file '{abs_path.replace(os.sep, '/')}'\n")
+            #            valid_files.append(abs_path)
+            #        else:
+            #            log(
+            #                f"WARNUNG: Segment fehlt, ist leer oder kein gültiges TS-Format: {abs_path}",
+            #                "warning",
+            #            )
 
             log("Inhalt von input.txt:")
-            with open(temp_input_file, "r") as f:
+            with open(self.temp_input_file, "r") as f:
                 log(f.read())
 
             if not valid_files:
@@ -1122,7 +1121,7 @@ class MergerManager:
                 "-safe",
                 "0",  # Erlaubt absolute Pfade in input.txt
                 "-i",
-                temp_input_file,  # Pfad zur input.txt
+                self.temp_input_file,  # Pfad zur input.txt
                 "-c:v",
                 "copy",  # Kopiert den Videostream unverändert
                 "-c:a",
@@ -1166,9 +1165,9 @@ class MergerManager:
             return False
         finally:
             # Sicherstellen, dass die temporäre input.txt Datei immer gelöscht wird
-            if os.path.exists(temp_input_file):
+            if os.path.exists(self.temp_input_file):
                 pass
-                #os.remove(temp_input_file)
+                #os.remove(self.temp_input_file)
                 
 
 def main():
@@ -1335,10 +1334,10 @@ def main():
                 for link in downloaded_ts_files:
                     print(f"Heruntergeladenes Segment: {link}\n")
                 
-                ffmpeg_executable = MergerManager(downloaded_ts_files, final_output_video_path)
+                ffmpeg_executable = MergerManager(downloaded_ts_files, driver.m3u8_first_filepath, final_output_video_path)
                 if ffmpeg_executable:
                     log("Starte Zusammenführung der TS-Dateien...")
-                    downloaded_ts_files.sort()  # Wichtig für die korrekte Reihenfolge
+                    #downloaded_ts_files.sort()  # Wichtig für die korrekte Reihenfolge
                     if ffmpeg_executable.merge_ts_files():
                         # Prüfe, ob die Datei wirklich existiert und nicht leer ist
                         if (
