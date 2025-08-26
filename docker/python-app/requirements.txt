@@ -3,5 +3,3 @@ httpx
 beautifulsoup4
 requests
 webdriver-manager
-chromium-browser
-chromium-driver
