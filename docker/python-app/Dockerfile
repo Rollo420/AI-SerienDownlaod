@@ -21,6 +21,7 @@ RUN apt-get update && \
 # Der Pfad ist relativ zum Build-Kontext (dem Stammverzeichnis des Projekts)
 COPY ./UnitTest/ConfigDocker/docker/python-app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+ENV PYTHONPATH=/app
 
 # Kein COPY für src, da per Volume gemountet
 # Standard CMD (wird von docker-compose.yml überschrieben)
