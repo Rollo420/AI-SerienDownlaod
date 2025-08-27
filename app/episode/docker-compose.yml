@@ -42,12 +42,12 @@ services:
       DNSMASQ_LISTENING: all
       PIHOLE_DNS_: 8.8.8.8;8.8.4.4 # Korrigiert von pihole02_DNS_ zu PIHOLE_DNS_
       PIHOLE_ADLISTS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts https://mirror1.malwaredomains.com/files/justdomains https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt"
-    volumes:
+    #volumes:
       # Hier sollte ein Volume-Mapping für persistente Pi-hole-Konfigurationen sein,
       # z.B. - ./docker/PiHole/pihole:/etc/pihole
       # und - ./docker/PiHole/dnsmasq.d:/etc/dnsmasq.d
       # Dein aktuelles Mapping für adlists.list ist in Ordnung, aber das könnte erweitert werden.
-      - ./docker/PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
+      #- ./docker/PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
     cap_add:
       - NET_ADMIN
     networks:
@@ -72,7 +72,7 @@ services:
       - SELENIUM_HUB_URL=http://selenium-chromium:4444/wd/hub # <-- KORRIGIERT: Service-Name statt Container-Name
       - SERIE_NAME=rick-and-morty
       - PYTHONUNBUFFERED=1
-    command: python /app/getEpisodesURL.py
+    command: python /app/GetURL.py
     networks:
       - pihole02_network # <-- HINZUGEFÜGT: Der Episodenmanager muss im selben Netzwerk sein
     dns:

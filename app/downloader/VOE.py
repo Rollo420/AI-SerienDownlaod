@@ -313,12 +313,8 @@ def main():
                         log_interval = max(1, total_segments // 20)
 
                         # Only every 5% or at the end of the download log
-                        if (current_download_count % log_interval == 0) or (
-                            current_download_count == total_segments
-                        ):
-                            log(
-                                f"    Heruntergeladen: {current_download_count}/{total_segments} ({progress_percent:.1f}%) Segmente..."
-                            )
+                        if (current_download_count % log_interval == 0) or (current_download_count == total_segments):
+                            log(f"Heruntergeladen: {current_download_count}/{total_segments} ({progress_percent:.1f}%) Segmente...")
 
             if not downloaded_ts_files:
                 log(

@@ -67,7 +67,7 @@ services:
 #    container_name: seriendownloader-app
 #    volumes:
 #      - ./downloads:/app/Folgen
-#      - ./downloads/logs:/app/Logs
+#      - ./app/storage/Log:/app/storage/Log
 #      - ./app:/app/src
 #    depends_on:
 #      selenium-chromium:

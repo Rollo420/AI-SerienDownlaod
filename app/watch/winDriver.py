@@ -778,10 +778,36 @@ class driverManager:
             sorted_ts_urls,
         )  # Keine Selektoren zurückgeben, da sie lokal sind
 
+def load_json_data(filename):
+    print("Loading JSON data...")
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    print("JSON data loaded successfully.")
+    return data
 
+def get_series_data(serien):
+    for serie in serien:
+        # Serien Title
+        title = serie["series_name"]
+        for season in serie["seasons"]:
+            # all Seasons
+            season_number = season["season_number"]
+            for episode in season["episode_links"]:
+                # all Episodes
+                episode_links = episode
+                #await asyncio.sleep(random.uniform(2,5))  # Simulate processing time
+                yield {
+                    "title": title,
+                    "season_number": season_number,
+                    "episode_links": episode_links
+                }
 
 if __name__ == "__main__":
     
     driver = driverManager()
     
-    driver.stream_episode("https://s.to/redirect/19457176")
+    serien = load_json_data('./all_series_data.json')
+    
+    for serie in get_series_data(serien):    
+        print(f"Processing Serie: {serie['episode_links']['primary_link']}")
+        driver.stream_episode("https://186.2.175.5/redirect/19166485")
