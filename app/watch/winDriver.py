@@ -85,6 +85,7 @@ class driverManager:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         #options.binary_location = "/snap/bin/chromium"
+        # Entferne: options.add_argument("--start-fullscreen")
 
         # Adblock Plus Extension laden (Pfad im Container anpassen!)
         adblock_path = "/app/src/adblockplus.crx"
@@ -435,6 +436,28 @@ class driverManager:
         self.driver.get(url)
         main_window_handle = self.driver.current_window_handle
 
+        # Setze das Video auf "faux fullscreen" (wie Taste 'f', nicht F11)
+        try:
+            self.driver.execute_script("""
+                var video = document.querySelector('video');
+                if (video) {
+                    video.style.position = 'fixed';
+                    video.style.top = '0';
+                    video.style.left = '0';
+                    video.style.width = '100vw';
+                    video.style.height = '100vh';
+                    video.style.zIndex = '9999';
+                    video.style.backgroundColor = 'black';
+                    video.style.margin = '0';
+                    video.style.padding = '0';
+                    document.body.style.margin = '0';
+                    document.body.style.overflow = 'hidden';
+                }
+            """)
+            log("Video auf Fenstergröße maximiert (faux fullscreen, wie Taste 'f').")
+        except Exception as e:
+            log(f"Faux-Fullscreen-JavaScript konnte nicht ausgeführt werden: {e}", "warning")
+        # ...existing code...
         WebDriverWait(self.driver, DEFAULT_TIMEOUT).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
@@ -623,7 +646,7 @@ class driverManager:
                             self.driver.execute_script("arguments[0].click();", play_button)
                             time.sleep(0.5)
 
-                            # close_overlays_and_iframes(driver) # Nach Klick Popups erneut schließen (kann hier weggelassen werden, da es in der Hauptschleife passiert)
+                            self.close_overlays_and_iframes() # Nach Klick Popups erneut schließen (kann hier weggelassen werden, da es in der Hauptschleife passiert)
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
@@ -683,7 +706,7 @@ class driverManager:
                     break  # Äußere Schleife beenden, wenn Video gestartet
 
             # Bereinigung nach jedem Schleifendurchlauf der Selektoren
-            # close_overlays_and_iframes(driver) # Dies kann hier wieder aktiviert werden, wenn nötig, aber es ist bereits in der Haupt-while-Schleife.
+            self.close_overlays_and_iframes() # Dies kann hier wieder aktiviert werden, wenn nötig, aber es ist bereits in der Haupt-while-Schleife.
 
             if not video_started_successfully:
                 time.sleep(
@@ -705,7 +728,7 @@ class driverManager:
         log(
             "Starte Überwachung der Videowiedergabe und Netzwerkanfragen bis zum Ende des Videos..."
         )
-        ts_urls = set()
+        #ts_urls = set()
 
         last_current_time = 0.0
         stalled_check_time = time.time()
@@ -716,6 +739,7 @@ class driverManager:
 
         while True:
             current_time, duration, paused = self.get_current_video_progress()
+            self.close_overlays_and_iframes()  # Regelmäßig Popups/Overlays entfernen
             print(f"Aktuelle Zeit: {current_time}/{duration}", "\r")
 
             if duration > 0 and current_time >= duration - 3.0:
@@ -757,25 +781,25 @@ class driverManager:
 
             time.sleep(3)  # Pause, um Browser-Aktivität zu beobachten und Logs zu sammeln
 
-        log(f"Überwachung beendet. Insgesamt {len(ts_urls)} einzigartige TS-URLs gefunden.")
+        #log(f"Überwachung beendet. Insgesamt {len(ts_urls)} einzigartige TS-URLs gefunden.")
 
-        if not ts_urls:
-            log(
-                "KEINE TS-URLs gefunden. Die Seite hat möglicherweise keine TS-Streams oder ein Problem ist aufgetreten.",
-                "error",
-            )
-            return (
-                False,
-                episode_title,
-                [],
-            )  # Keine Selektoren zurückgeben, da sie lokal sind
+          #if not ts_urls:
+          #  log(
+          #      "KEINE TS-URLs gefunden. Die Seite hat möglicherweise keine TS-Streams oder ein Problem ist aufgetreten.",
+          #      "error",
+          #  )
+          #  return (
+          #      False,
+          #      episode_title,
+          #       [],
+          #         )  # Keine Selektoren zurückgeben, da sie lokal sind
 
-        sorted_ts_urls = ts_urls #sorted(list(ts_urls))
+        #sorted_ts_urls = ts_urls #sorted(list(ts_urls))
 
         return (
             True,
             episode_title,
-            sorted_ts_urls,
+            #sorted_ts_urls,
         )  # Keine Selektoren zurückgeben, da sie lokal sind
 
 def load_json_data(filename):
@@ -803,11 +827,30 @@ def get_series_data(serien):
                 }
 
 if __name__ == "__main__":
-    
-    driver = driverManager()
-    
-    serien = load_json_data('./all_series_data.json')
-    
-    for serie in get_series_data(serien):    
+    # Variable: Soll der Driver wiederverwendet werden?
+    reuse_driver = True  # Auf False setzen, um für jede Episode einen neuen Driver zu verwenden
+
+    serien = load_json_data(r'C:\Projekte\Python\AI-SerienDownlaod\app\watch\all_series_data.json')
+
+    driver = None
+    for serie in get_series_data(serien):
         print(f"Processing Serie: {serie['episode_links']['primary_link']}")
-        driver.stream_episode("https://186.2.175.5/redirect/19166485")
+        episode_url = serie['episode_links']['primary_link']
+
+        # Driver erzeugen oder wiederverwenden
+        if not reuse_driver or driver is None:
+            if driver is not None:
+                driver.driver.close()
+            driver = driverManager()
+
+        # Episode abspielen
+        driver.stream_episode(episode_url)
+
+        # Driver schließen, falls nicht wiederverwendet
+        if not reuse_driver:
+            driver.driver.close()
+            driver = None
+
+    # Am Ende: Driver schließen, falls noch offen
+    if driver is not None:
+        driver.driver.close()
