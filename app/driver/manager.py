@@ -690,6 +690,7 @@ class driverManager:
                         break  # Innere Schleife beenden, wenn Video gestartet
 
                 if video_started_successfully:
+                    from parsers.m3u8 import M3U8 as m3u8  # Lokaler Import, um zirkuläre Abhängigkeiten zu vermeiden
                     m3u8_manager = m3u8(self.driver, "/app/Logs/m3u8_files")
                     self.m3u8_files_dict = m3u8_manager.m3u8_files_dict
                     self.m3u8_first_filepath = m3u8_manager.m3u8_first_filepath

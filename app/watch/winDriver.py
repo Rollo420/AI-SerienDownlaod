@@ -85,7 +85,7 @@ class driverManager:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         #options.binary_location = "/snap/bin/chromium"
-        # Entferne: options.add_argument("--start-fullscreen")
+        options.add_argument("--start-fullscreen")
         options.add_argument("start-maximized")
 
         # Adblock Plus Extension laden (Pfad im Container anpassen!)
@@ -710,17 +710,26 @@ class driverManager:
                     #self.m3u8_first_filepath = m3u8_manager.m3u8_first_filepath
                     
                     try:
-                        fullscreen_btn = self.driver.find_element(
-                            By.XPATH,
-                            "/html/body/div/div/div[1]/div[2]/div[12]/div[4]/div/div[17]"
-                        )
-                        self.driver.execute_script("arguments[0].click();", fullscreen_btn)
-                        log("Fullscreen-Button per XPath geklickt.")
-                        print("Fullscreen-Button per XPath geklickt.")
+                        # Entferne das Element /html/div per JavaScript
+                        self.driver.execute_script("""
+                            var div = document.evaluate('/html/div', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                            if (div) div.remove();
+                        """)
+                        log("Element /html/div wurde entfernt.")
+                        print("Element /html/div wurde entfernt.")
+
+                        # Setze das Video in den Fullscreen-Modus per JavaScript
+                        self.driver.execute_script("""
+                            var video = document.querySelector('video');
+                            if (video && video.requestFullscreen) {
+                                video.requestFullscreen();
+                            }
+                        """)
+                        log("Video per JavaScript in Fullscreen gesetzt.")
+                        print("Video per JavaScript in Fullscreen gesetzt.")
                     except Exception as e:
-                        log(f"Fullscreen-Button konnte nicht geklickt werden: {e}", "warning")
-                        print(f"Fullscreen-Button konnte nicht geklickt werden: {e}", "warning")
-                        
+                        log(f"Fehler beim Entfernen von /html/div oder Fullscreen: {e}", "warning")
+                        print(f"Fehler beim Entfernen von /html/div oder Fullscreen: {e}", "warning")
                     break  # Äußere Schleife beenden, wenn Video gestartet
 
             # Bereinigung nach jedem Schleifendurchlauf der Selektoren

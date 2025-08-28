@@ -26,7 +26,10 @@ import httpx
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
+from driver.manager import driverManager
+from parsers.m3u8 import M3U8
 from helper.wrapper.logger import Logging
+import helper.fileManager.file as file_helper
 
 # --- Konfiguration ---
 DEFAULT_TIMEOUT = 60  # Timeout für das Warten auf Elemente
@@ -47,6 +50,7 @@ class MergerManager:
         self.ts_file_paths = ts_file_paths
         self.output_filepath = output_video_path or os.path.join(os.path.expanduser('~'), 'Downloads')
         self.temp_input_file = temp_input_file 
+        self.logger = Logging()
         
     
     def find_ffmpeg_executable(self):
@@ -56,10 +60,10 @@ class MergerManager:
         """
         try:
             subprocess.run(["which", "ffmpeg"], check=True, capture_output=True, text=True)
-            log("FFmpeg im System-PATH gefunden.")
+            self.logger.log("FFmpeg im System-PATH gefunden.")
             return "ffmpeg"
         except subprocess.CalledProcessError:
-            log(
+            self.logger.log(
                 "FEHLER: FFmpeg wurde nicht gefunden. Stellen Sie sicher, dass es im Docker-Container installiert ist.",
                 "error",
             )
@@ -83,7 +87,7 @@ class MergerManager:
         um Konflikte bei mehreren gleichzeitigen oder aufeinanderfolgenden Sessions zu vermeiden.
         """
         if not self.ffmpeg_exec_path:
-            log(
+            self.logger.log(
                 "FEHLER: FFmpeg-Executable nicht gefunden. Kann Dateien nicht zusammenführen.",
                 "error",
             )
@@ -106,7 +110,7 @@ class MergerManager:
 
         try:
             valid_files = []
-            #log(f"Erstelle input.txt unter: {m3u8_filepath}")
+            #self.logger.log(f"Erstelle input.txt unter: {m3u8_filepath}")
             #os.makedirs(
             #    ts_files_directory, exist_ok=True
             #)  # Sicherstellen, dass der Ordner existiert
@@ -116,24 +120,24 @@ class MergerManager:
             #        exists = os.path.exists(abs_path)
             #        size = os.path.getsize(abs_path) if exists else 0
             #        valid_ts =self. is_valid_ts_file(abs_path) if exists and size > 0 else False
-            #        log(
+            #        self.logger.log(
             #            f"Prüfe Segment: {abs_path} | Existiert: {exists} | Größe: {size} | MPEG-TS: {valid_ts}"
             #        )
             #        if exists and size > 0 and valid_ts:
             #            f.write(f"file '{abs_path.replace(os.sep, '/')}'\n")
             #            valid_files.append(abs_path)
             #        else:
-            #            log(
+            #            self.logger.log(
             #                f"WARNUNG: Segment fehlt, ist leer oder kein gültiges TS-Format: {abs_path}",
             #                "warning",
             #            )
 
-            log("Inhalt von input.txt:")
+            self.logger.log("Inhalt von input.txt:")
             with open(self.temp_input_file, "r") as f:
-                log(f.read())
+                self.logger.log(f.read())
 
             if not valid_files:
-                log(
+                self.logger.log(
                     "FEHLER: Keine gültigen TS-Dateien zum Zusammenfügen gefunden.", "error"
                 )
                 return False
@@ -157,36 +161,36 @@ class MergerManager:
                 "-1",  # Entfernt Metadaten
                 self.output_filepath,  # Zieldatei
             ]
-            log(f"Führe FFmpeg-Befehl aus: {' '.join(command)}")
+            self.logger.log(f"Führe FFmpeg-Befehl aus: {' '.join(command)}")
             process = subprocess.run(command, check=True, capture_output=True, text=True)
-            log(f"Alle Segmente erfolgreich zu '{self.output_filepath}' zusammengeführt.")
+            self.logger.log(f"Alle Segmente erfolgreich zu '{self.output_filepath}' zusammengeführt.")
 
             stdout_lines = process.stdout.splitlines()
             stderr_lines = process.stderr.splitlines()
 
             if stdout_lines:
-                log("\n--- FFmpeg Standardausgabe (gekürzt) ---")
-                log("\n".join(stdout_lines[-10:]))
+                self.logger.log("\n--- FFmpeg Standardausgabe (gekürzt) ---")
+                self.logger.log("\n".join(stdout_lines[-10:]))
 
             if stderr_lines:
-                log("\n--- FFmpeg Fehler-Ausgabe (gekürzt) ---")
-                log("\n".join(stderr_lines[-10:]), "warning")
+                self.logger.log("\n--- FFmpeg Fehler-Ausgabe (gekürzt) ---")
+                self.logger.log("\n".join(stderr_lines[-10:]), "warning")
 
             return True
         except subprocess.CalledProcessError as e:
-            log(
+            self.logger.log(
                 f"FEHLER beim Zusammenführen mit FFmpeg (Exit Code {e.returncode}): {e}",
                 "error",
             )
             stdout_lines = e.stdout.splitlines()
             stderr_lines = e.stderr.splitlines()
             if stdout_lines:
-                log(f"FFmpeg Stdout (gekürzt): \n" + "\n".join(stdout_lines[-10:]))
+                self.logger.log(f"FFmpeg Stdout (gekürzt): \n" + "\n".join(stdout_lines[-10:]))
             if stderr_lines:
-                log(f"FFmpeg Stderr (gekürzt): \n" + "\n".join(stderr_lines[-10:]), "error")
+                self.logger.log(f"FFmpeg Stderr (gekürzt): \n" + "\n".join(stderr_lines[-10:]), "error")
             return False
         except Exception as e:
-            log(f"Ein unerwarteter Fehler ist aufgetreten: {e}", "error")
+            self.logger.log(f"Ein unerwarteter Fehler ist aufgetreten: {e}", "error")
             return False
         finally:
             # Sicherstellen, dass die temporäre input.txt Datei immer gelöscht wird
@@ -211,20 +215,21 @@ def main():
     cleaned_agent_name = args.agentName.strip().replace(" ", "_").replace("/", "_")
     LOGFILE_PATH = os.path.join(log_file_base_path, f"{cleaned_agent_name}.log")
 
-    logger_instance = Logging.log(args.agentName, LOGFILE_PATH)
-
+    logger = Logging(agentName=args.agentName, logfilePath=LOGFILE_PATH)
+    
+    
     try:
         driver = driverManager(headless=not args.no_headless, proxyAddresse=args.proxyAddresse)
         
         base_series_output_path = os.path.abspath(args.output_path)
         os.makedirs(base_series_output_path, exist_ok=True)
-        logger_instance.log(f"Serien-Basisordner: {base_series_output_path}")
+        logger.log(f"Serien-Basisordner: {base_series_output_path}")
 
         success, episode_title, sorted_ts_urls = driver.stream_episode(args.url)
 
         if success and sorted_ts_urls:
-            log("\nDownload der TS-URLs erfolgreich abgeschlossen!")
-            cleaned_episode_title = clean_filename(episode_title)
+            logger.log("\nDownload der TS-URLs erfolgreich abgeschlossen!")
+            cleaned_episode_title = file_helper.clean_filename(episode_title)
 
             # Verbesserte Extraktion des Seriennamens
             series_name = ""
@@ -250,13 +255,13 @@ def main():
 
             series_dir = os.path.join(base_series_output_path, series_name)
             os.makedirs(series_dir, exist_ok=True)
-            log(f"Serienordner erstellt: {series_dir}")
+            logger.log(f"Serienordner erstellt: {series_dir}")
 
             # Zielpfad für die fertige Folge
             final_output_video_path = os.path.join(
                 series_dir, f"{cleaned_episode_title}.mp4"
             )
-            final_output_video_path = get_unique_filename(
+            final_output_video_path = file_helper.get_unique_filename(
                 final_output_video_path.rsplit(".", 1)[0], "mp4"
             )
 
@@ -264,14 +269,14 @@ def main():
             temp_ts_dir = os.path.join(
                 series_dir, f"{cleaned_episode_title}_temp_ts"
             )  # Eindeutiger Temp-Ordner pro Episode
-            temp_ts_dir = get_unique_directory_name(
+            temp_ts_dir = file_helper.get_unique_directory_name(
                 temp_ts_dir
             )  # Falls es mehrere Downloads des gleichen Titels gibt
             os.makedirs(temp_ts_dir, exist_ok=True)
-            log(f"Temporärer TS-Ordner für Segmente: {temp_ts_dir}")
+            logger.log(f"Temporärer TS-Ordner für Segmente: {temp_ts_dir}")
 
             downloaded_ts_files = []
-            log(
+            logger.log(
                 f"Lade {len(sorted_ts_urls)} TS-Segmente in '{temp_ts_dir}' herunter..."
             )
 
@@ -284,7 +289,7 @@ def main():
                     segment_filename = f"{os.path.basename(urlparse(ts_url).path)}" #f"segment_{i:05d}.ts"
                     futures.append(
                         executor.submit(
-                            download_file, ts_url, segment_filename, temp_ts_dir
+                            file_helper.download_file, ts_url, segment_filename, temp_ts_dir
                         )
                     )
 
@@ -294,7 +299,7 @@ def main():
                     if result_filepath:
                         downloaded_ts_files.append(result_filepath)
                     else:
-                        log(
+                        logger.log(
                             f"WARNUNG: Download von Segment {i:05d} fehlgeschlagen oder übersprungen.",
                             "warning",
                         )
@@ -314,10 +319,10 @@ def main():
 
                         # Only every 5% or at the end of the download log
                         if (current_download_count % log_interval == 0) or (current_download_count == total_segments):
-                            log(f"Heruntergeladen: {current_download_count}/{total_segments} ({progress_percent:.1f}%) Segmente...")
+                            logger.log(f"Heruntergeladen: {current_download_count}/{total_segments} ({progress_percent:.1f}%) Segmente...")
 
             if not downloaded_ts_files:
-                log(
+                logger.log(
                     "FEHLER: Keine TS-Segmente erfolgreich heruntergeladen. Kann nicht zusammenführen.",
                     "error",
                 )
@@ -327,7 +332,7 @@ def main():
                 
                 ffmpeg_executable = MergerManager(downloaded_ts_files, driver.m3u8_first_filepath, final_output_video_path)
                 if ffmpeg_executable:
-                    log("Starte Zusammenführung der TS-Dateien...")
+                    logger.log("Starte Zusammenführung der TS-Dateien...")
                     #downloaded_ts_files.sort()  # Wichtig für die korrekte Reihenfolge
                     if ffmpeg_executable.merge_ts_files():
                         # Prüfe, ob die Datei wirklich existiert und nicht leer ist
@@ -335,22 +340,22 @@ def main():
                             os.path.exists(final_output_video_path)
                             and os.path.getsize(final_output_video_path) > 0
                         ):
-                            log(
+                            logger.log(
                                 f"\nFERTIG! Die Folge wurde erfolgreich gespeichert unter:\n{final_output_video_path}"
                             )
                         else:
-                            log(
+                            logger.log(
                                 f"FEHLER: Die .mp4-Datei wurde nach dem Merge nicht gefunden oder ist leer: {final_output_video_path}",
                                 "error",
                             )
 
-                        log("Bereinige temporäre TS-Dateien...")
+                        logger.log("Bereinige temporäre TS-Dateien...")
                         for f in downloaded_ts_files:
                             try:
                                 pass
                                 #os.remove(f)
                             except OSError as e:
-                                log(
+                                logger.log(
                                     f"Fehler beim Löschen von temporärer Datei {f}: {e}",
                                     "error",
                                 )
@@ -358,47 +363,47 @@ def main():
                             # Versuch, das temporäre Verzeichnis zu löschen, wenn es leer ist
                             if not os.listdir(temp_ts_dir):
                                 os.rmdir(temp_ts_dir)
-                                log(
+                                logger.log(
                                     f"Temporäres Verzeichnis '{temp_ts_dir}' erfolgreich gelöscht."
                                 )
                             else:
-                                log(
+                                logger.log(
                                     f"Temporäres Verzeichnis '{temp_ts_dir}' ist nicht leer und wurde nicht gelöscht.",
                                     "warning",
                                 )
                         except OSError as e:
-                            log(
+                            logger.log(
                                 f"Fehler beim Löschen des temporären Verzeichnisses {temp_ts_dir}: {e}",
                                 "error",
                             )
-                        log(
+                        logger.log(
                             "\nDownload- und Zusammenführungsprozess erfolgreich abgeschlossen!"
                         )
                     else:
-                        log("\nZusammenführung der TS-Dateien fehlgeschlagen.", "error")
-                        log(f"Temporäre TS-Dateien verbleiben in: {temp_ts_dir}")
+                        logger.log("\nZusammenführung der TS-Dateien fehlgeschlagen.", "error")
+                        logger.log(f"Temporäre TS-Dateien verbleiben in: {temp_ts_dir}")
                 else:
-                    log(
+                    logger.log(
                         "\nFFmpeg ist nicht verfügbar. Die TS-Dateien wurden heruntergeladen, aber nicht zusammengeführt."
                     )
-                    log(f"Temporäre TS-Dateien befinden sich in: {temp_ts_dir}")
-                    log(
+                    logger.log(f"Temporäre TS-Dateien befinden sich in: {temp_ts_dir}")
+                    logger.log(
                         f"Du kannst diese Dateien manuell mit FFmpeg zusammenführen, z.B. so:"
                     )
-                    log(
+                    logger.log(
                         f'ffmpeg -f concat -safe 0 -i "{temp_ts_dir}/input.txt" -c copy "{final_output_video_path}"'
                     )
-                    log(
+                    logger.log(
                         f"Wobei {temp_ts_dir}/input.txt eine Liste der TS-Dateien im Format 'file 'segment_0000.ts'' enthält."
                     )
         else:
-            log("\nDownload der TS-URLs fehlgeschlagen oder unvollständig.", "error")
+            logger.log("\nDownload der TS-URLs fehlgeschlagen oder unvollständig.", "error")
 
     except Exception as e:
-        log(f"Ein kritischer Fehler ist aufgetreten: {e}", "error")
+        logger.log(f"Ein kritischer Fehler ist aufgetreten: {e}", "error")
     finally:
         if driver:
-            log("Schließe den Browser...")
+            logger.log("Schließe den Browser...")
             driver.driver.quit()
 
 
