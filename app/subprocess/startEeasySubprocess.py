@@ -39,7 +39,11 @@ async def create_task(agent_name, data):
     return await asyncio.create_subprocess_exec(
         sys.executable,
 <<<<<<< HEAD
+<<<<<<< HEAD
         "/app/src/downloader/VOE.py",
+=======
+        "./app/src/downloader/VOE.py",
+>>>>>>> 06c0b2b (`finish full screen Refactor code to remove globalFunktion.py and move functions to respective modules`)
 =======
         "./app/src/downloader/VOE.py",
 >>>>>>> 06c0b2b (`finish full screen Refactor code to remove globalFunktion.py and move functions to respective modules`)
