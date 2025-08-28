@@ -1,4 +1,29 @@
+import os
+import re
+import sys
+import time
+import json
+from datetime import datetime
+from helper.wrapper.logger import Logging
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import (
+    TimeoutException,
+    NoSuchElementException,
+    WebDriverException,
+    ElementClickInterceptedException,
+    StaleElementReferenceException,
+)
 
+
+# --- Konfiguration ---
+DEFAULT_TIMEOUT = 60  # Timeout für das Warten auf Elemente
+VIDEO_START_TIMEOUT = 120  # Spezifischer Timeout für den Video-Start-Versuch
 
 class driverManager:
     """
@@ -10,6 +35,7 @@ class driverManager:
         self.headless = headless
         self.proxyAddresse = proxyAddresse
         self.m3u8_first_filepath = None
+        self.logger = Logging()
         self.proxies = self.load_and_filter_proxies() 
         self.driver = self.initialize_driver()
         self.main_window_handle = self.driver.current_window_handle
@@ -18,10 +44,10 @@ class driverManager:
     def initialize_driver(self):
         options = Options()
         if self.headless:
-            log("Starte Chromium im Headless-Modus (im Docker-Container)...")
+            self.logger.log("Starte Chromium im Headless-Modus (im Docker-Container)...", "info")
             options.add_argument("--headless=new")
         else:
-            log("Starte Chromium im sichtbaren Modus (im Docker-Container via VNC)...")
+            self.logger.log("Starte Chromium im sichtbaren Modus (im Docker-Container via VNC)...")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--window-size=1920,1080")
@@ -33,7 +59,7 @@ class driverManager:
         options.add_experimental_option("useAutomationExtension", False)
 
         if self.proxyAddresse:
-            log(f"Konfiguriere Browser für Proxy: {self.proxyAddresse}")
+            self.logger.log(f"Konfiguriere Browser für Proxy: {self.proxyAddresse}")
             options.add_argument(f"--proxy-server={self.proxyAddresse}")
 
         # Adblock Plus Extension laden (Pfad im Container anpassen!)
@@ -45,10 +71,10 @@ class driverManager:
                 "SELENIUM_HUB_URL", "http://selenium-chromium:4444/wd/hub"
             )
              
-            log(f"Chromium WebDriver erfolgreich mit {selenium_hub_url} verbunden.")
+            self.logger.log(f"Chromium WebDriver erfolgreich mit {selenium_hub_url} verbunden.")
             return webdriver.Remote(command_executor=selenium_hub_url, options=options)
         except WebDriverException as e:
-            log(f"FEHLER beim Initialisieren des WebDriver: {e}", "error")
+            self.logger.log(f"FEHLER beim Initialisieren des WebDriver: {e}", "error")
             sys.exit(1)
 
 
@@ -58,7 +84,7 @@ class driverManager:
         Gibt eine Liste von Proxy-Strings zurück (z.B. "http://ip:port").
         """
         proxies_list = []
-        log("Versuche, Proxys von der API abzurufen...", "info")
+        self.logger.log("Versuche, Proxys von der API abzurufen...", "info")
         try:
             response = requests.get("https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=json", timeout=10)
             response.raise_for_status() # Löst einen Fehler für schlechte HTTP-Antworten aus
@@ -75,21 +101,21 @@ class driverManager:
                         proxy_string = proxy_entry.get("proxy")
                         if proxy_string:
                             proxies_list.append(proxy_string)
-                            log(
+                            self.logger.log(
                                 f"Proxy geladen: {proxy_string} (Anonymität: {proxy_entry.get('anonymity')}, Land: {proxy_entry.get('ip_data', {}).get('country')})",
                                 "debug",
                             )
             else:
-                log("WARNUNG: 'proxies'-Schlüssel nicht in der API-Antwort gefunden.", "warning")
+                self.logger.log("WARNUNG: 'proxies'-Schlüssel nicht in der API-Antwort gefunden.", "warning")
         except requests.exceptions.RequestException as e:
-            log(f"FEHLER: Fehler beim Abrufen der Proxys von der API: {e}. Fahre ohne Proxys fort.", "error")
+            self.logger.log(f"FEHLER: Fehler beim Abrufen der Proxys von der API: {e}. Fahre ohne Proxys fort.", "error")
         except json.JSONDecodeError as e:
-            log(f"FEHLER: Ungültiges JSON-Format in der API-Antwort: {e}. Fahre ohne Proxys fort.", "error")
+            self.logger.log(f"FEHLER: Ungültiges JSON-Format in der API-Antwort: {e}. Fahre ohne Proxys fort.", "error")
         except Exception as e:
-            log(f"Ein unerwarteter Fehler beim Laden der Proxys aufgetreten: {e}. Fahre ohne Proxys fort.","error")
+            self.logger.log(f"Ein unerwarteter Fehler beim Laden der Proxys aufgetreten: {e}. Fahre ohne Proxys fort.","error")
 
         if not proxies_list:
-            log("WARNUNG: Keine gültigen Proxys gefunden oder geladen. Der Browser wird ohne Proxy gestartet.","warning")
+            self.logger.log("WARNUNG: Keine gültigen Proxys gefunden oder geladen. Der Browser wird ohne Proxy gestartet.","warning")
 
         return proxies_list
 
@@ -100,7 +126,7 @@ class driverManager:
         try:
             handles = self.driver.window_handles
             if len(handles) > 1:
-                log(
+                self.logger.log(
                     f"NEUE FENSTER/TABS ERKANNT: {len(handles) - 1} Pop-up(s). Schließe diese..."
                 )
                 for handle in handles:
@@ -108,16 +134,16 @@ class driverManager:
                         try:
                             self.driver.switch_to.window(handle)
                             self.driver.close()
-                            log(f"Pop-up-Tab '{handle}' geschlossen.")
+                            self.logger.log(f"Pop-up-Tab '{handle}' geschlossen.")
                         except Exception as e:
-                            log(
+                            self.logger.log(
                                 f"WARNUNG: Konnte Pop-up-Tab '{handle}' nicht schließen: {e}",
                                 "warning",
                             )
                 self.driver.switch_to.window(main_window_handle)  # Zurück zum Haupt-Tab
                 time.sleep(1)  # Kurze Pause nach dem Schließen
         except Exception as e:
-            log(f"FEHLER: Probleme beim Verwalten von Browser-Fenstern: {e}", "error")
+            self.logger.log(f"FEHLER: Probleme beim Verwalten von Browser-Fenstern: {e}", "error")
 
 
     def get_current_video_progress(self):
@@ -152,7 +178,7 @@ class driverManager:
             cleaned_title = re.split(r"\||-|–", title)[0].strip()
             return re.sub(r'[<>:"/\\|?*]', "_", cleaned_title)
         except Exception as e:
-            log(
+            self.logger.log(
                 f"WARNUNG: Konnte Episodentitel nicht extrahieren: {e}. Verwende Standardtitel.",
                 "warning",
             )
@@ -196,7 +222,7 @@ class driverManager:
                     element = WebDriverWait(self.driver, 0.5).until(
                         EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
                     )
-                    log(f"Versuche, Popup mit Klick-Selektor '{selector}' zu schließen.")
+                    self.logger.log(f"Versuche, Popup mit Klick-Selektor '{selector}' zu schließen.")
                     self.driver.execute_script("arguments[0].click();", element)
                     # time.sleep(0.2)
                 except (
@@ -206,7 +232,7 @@ class driverManager:
                 ):
                     pass
                 except Exception as e:
-                    log(
+                    self.logger.log(
                         f"Fehler beim Schließen eines Popups mit Klick ({selector}): {e}",
                         "warning",
                     )
@@ -217,7 +243,7 @@ class driverManager:
                     elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
                     for element in elements:
                         if element.is_displayed():  # Nur sichtbare Overlays entfernen
-                            log(
+                            self.logger.log(
                                 f"Versuche, Overlay mit Selektor '{selector}' direkt zu entfernen."
                             )
                             self.driver.execute_script("arguments[0].remove();", element)
@@ -225,7 +251,7 @@ class driverManager:
                 except (StaleElementReferenceException, NoSuchElementException):
                     pass  # Element wurde bereits entfernt oder existiert nicht mehr
                 except Exception as e:
-                    log(
+                    self.logger.log(
                         f"Fehler beim Versuch, Overlay ({selector}) zu entfernen: {e}",
                         "warning",
                     )
@@ -244,13 +270,13 @@ class driverManager:
                         # Eine robustere Prüfung: Ist das Element im sichtbaren Bereich und nicht der Haupt-Body?
                         # Manchmal sind es nur leere oder unsichtbare bodies
                         if body.is_displayed():
-                            log("Entferne sekundäres, sichtbares Overlay-Body-Element.")
+                            self.logger.log("Entferne sekundäres, sichtbares Overlay-Body-Element.")
                             self.driver.execute_script("arguments[0].remove();", body)
                             # time.sleep(0.2)
                 except StaleElementReferenceException:
                     pass  # Element wurde bereits entfernt
                 except Exception as e:
-                    log(
+                    self.logger.log(
                         f"Fehler beim Entfernen eines sekundären Body-Overlays: {e}",
                         "warning",
                     )
@@ -304,13 +330,13 @@ class driverManager:
                         and iframe.is_displayed()
                         and is_overlay_iframe
                     ):
-                        log("Entferne potenzielles Overlay-iframe.")
+                        self.logger.log("Entferne potenzielles Overlay-iframe.")
                         self.driver.execute_script("arguments[0].remove();", iframe)
                         # time.sleep(0.5)
                     elif (
                         iframe.is_displayed()
                     ):  # Wenn nicht als Overlay erkannt, aber sichtbar, kann es Adblock sein
-                        log(
+                        self.logger.log(
                             f"Iframe sichtbar, versuche in den Iframe zu wechseln um ggf. Popups zu schließen: {src}"
                         )
                         try:
@@ -327,7 +353,7 @@ class driverManager:
                                 )
                                 for inner_elem in inner_elements:
                                     if inner_elem.is_displayed():
-                                        log(
+                                        self.logger.log(
                                             f"Entferne inneres Element im Iframe: {inner_selector}"
                                         )
                                         self.driver.execute_script(
@@ -350,7 +376,7 @@ class driverManager:
                                             (By.CSS_SELECTOR, inner_sel)
                                         )
                                     )
-                                    log(f"Klicke auf Button in Iframe: {inner_sel}")
+                                    self.logger.log(f"Klicke auf Button in Iframe: {inner_sel}")
                                     self.driver.execute_script(
                                         "arguments[0].click();", inner_btn
                                     )
@@ -361,7 +387,7 @@ class driverManager:
                                             "var v = document.querySelector('video'); if (v) return !v.paused && v.currentTime > 0; return false;"
                                         )
                                         if video_status:
-                                            log(
+                                            self.logger.log(
                                                 "Video im Iframe erfolgreich gestartet/unpausiert."
                                             )
                                             break  # Nächsten Selektor überspringen
@@ -372,14 +398,14 @@ class driverManager:
                                 ):
                                     pass
                                 except Exception as inner_e:
-                                    log(
+                                    self.logger.log(
                                         f"Fehler beim Klicken im Iframe ({inner_sel}): {inner_e}",
                                         "warning",
                                     )
 
                             self.driver.switch_to.default_content()
                         except Exception as switch_e:
-                            log(
+                            self.logger.log(
                                 f"FEHLER: Konnte nicht in Iframe wechseln oder dort interagieren: {switch_e}",
                                 "warning",
                             )
@@ -388,13 +414,13 @@ class driverManager:
                 except StaleElementReferenceException:
                     pass  # Element wurde bereits entfernt
                 except Exception as e:
-                    log(f"Fehler beim Bearbeiten eines iframe: {e}", "warning")
+                    self.logger.log(f"Fehler beim Bearbeiten eines iframe: {e}", "warning")
 
             # Sicherstellen, dass keine neuen Tabs geöffnet wurden
             self.handle_new_tabs_and_focus(self.main_window_handle)
 
         except Exception as e:
-            log(f"FEHLER beim Entfernen von Overlays und iframes: {e}", "error")
+            self.logger.log(f"FEHLER beim Entfernen von Overlays und iframes: {e}", "error")
 
 
     def stream_episode(self, url):
@@ -419,14 +445,14 @@ class driverManager:
             "div.plyr__controls button.plyr__controls__item--play",  # Plyr.js player
         ]
         
-        log(f"\nNavigiere zu: {url}")
+        self.logger.log(f"\nNavigiere zu: {url}")
         self.driver.get(url)
         main_window_handle = self.driver.current_window_handle
 
         WebDriverWait(self.driver, DEFAULT_TIMEOUT).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
-        log("Seite geladen. Suche nach Popups und Overlays...")
+        self.logger.log("Seite geladen. Suche nach Popups und Overlays...")
         # close_overlays_and_iframes muss ebenfalls Zugriff auf seine eigene Lernvariable haben
         # oder diese als Parameter übergeben bekommen und zurückgeben.
         # Für diese Funktion gehen wir davon aus, dass close_overlays_and_iframes entweder globalen Zustand verwaltet
@@ -434,9 +460,9 @@ class driverManager:
         self.close_overlays_and_iframes()
 
         episode_title = self.get_episode_title()
-        log(f"Erkannter Episodentitel: {episode_title}")
+        self.logger.log(f"Erkannter Episodentitel: {episode_title}")
 
-        log(
+        self.logger.log(
             "Starte aggressive Schleife für Video-Start (JS-play(), 'video'-Klick, Maus-Emulation und priorisierte Selektoren)..."
         )
 
@@ -450,7 +476,7 @@ class driverManager:
         while not video_started_successfully and (
             time.time() - start_time_attempt < max_startup_duration
         ):
-            log(
+            self.logger.log(
                 f"Versuche Video zu starten (Zeit vergangen: {int(time.time() - start_time_attempt)}s/{max_startup_duration}s)..."
             )
 
@@ -459,20 +485,20 @@ class driverManager:
                 current_time, duration, paused = self.get_current_video_progress()
                 if duration > 0 and current_time > 0.1 and not paused:
                     video_started_successfully = True
-                    log(
+                    self.logger.log(
                         f"Video läuft bereits nach initialen Bereinigungen. Kein weiterer Startversuch nötig."
                     )
                     break  # Video läuft, Schleife beenden
 
                 for attempt_num in range(num_attempts_per_selector):
-                    log(
+                    self.logger.log(
                         f"-> Versuche mit Selektor '{selector}' (Versuch {attempt_num + 1}/{num_attempts_per_selector})..."
                     )
 
                     if selector == "JS_play":
                         # 1. VERSUCH: Direkter JavaScript play() auf das Video-Element
                         try:
-                            log(
+                            self.logger.log(
                                 "-> Versuche Video direkt per JavaScript play() zu starten."
                             )
                             self.driver.execute_script(
@@ -480,9 +506,9 @@ class driverManager:
                                 var v = document.querySelector('video');
                                 if(v) { 
                                     v.play(); 
-                                    console.log('Video play() called via JavaScript.');
+                                    console.self.logger.log('Video play() called via JavaScript.');
                                 } else {
-                                    console.log('No <video> element found for JS play() in this attempt.');
+                                    console.self.logger.log('No <video> element found for JS play() in this attempt.');
                                 }
                             """
                             )
@@ -490,7 +516,7 @@ class driverManager:
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
-                                log(
+                                self.logger.log(
                                     f"Video per JavaScript erfolgreich gestartet bei {current_time:.2f}/{duration:.2f} Sekunden."
                                 )
                                 video_started_successfully = True
@@ -500,18 +526,18 @@ class driverManager:
                                 video_start_selectors_prioritized.insert(0, "JS_play")
                                 break  # Erfolgreich, innere Schleife beenden
                             elif paused and duration > 0:
-                                log(
+                                self.logger.log(
                                     f"Video pausiert nach JS-play() bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play() oder nächsten Selektor."
                                 )
                         except Exception as e:
-                            log(
+                            self.logger.log(
                                 f"FEHLER beim JS-Startversuch: {e}", "debug"
                             )  # Debug, da oft nur Video noch nicht da
 
                     elif selector == "video":
                         # 2. VERSUCH: Klick auf das 'video'-Element (falls es anklickbar wird)
                         try:
-                            log("-> Versuche Klick auf den 'video'-Selektor.")
+                            self.logger.log("-> Versuche Klick auf den 'video'-Selektor.")
                             video_element = WebDriverWait(self.driver, 2).until(  # Kurzer Timeout für diesen Versuch
                                 EC.element_to_be_clickable((By.CSS_SELECTOR, "video"))
                             )
@@ -520,7 +546,7 @@ class driverManager:
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
-                                log(
+                                self.logger.log(
                                     f"Video erfolgreich über Selektor 'video' gestartet bei {current_time:.2f}/{duration:.2f} Sekunden."
                                 )
                                 video_started_successfully = True
@@ -531,19 +557,19 @@ class driverManager:
                                 
                                 break  # Erfolgreich, innere Schleife beenden
                             elif paused and duration > 0:
-                                log(f"Video pausiert nach 'video'-Klick bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play().")
+                                self.logger.log(f"Video pausiert nach 'video'-Klick bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play().")
                         except (
                             TimeoutException,
                             NoSuchElementException,
                             ElementClickInterceptedException,
                             StaleElementReferenceException,
                         ) as e:
-                            log(
+                            self.logger.log(
                                 f"Klick auf 'video'-Selektor nicht möglich/gefunden: {e}",
                                 "debug",
                             )
                         except Exception as e:
-                            log(
+                            self.logger.log(
                                 f"Unerwarteter Fehler beim Klick auf 'video': {e}",
                                 "warning",
                             )
@@ -551,7 +577,7 @@ class driverManager:
                     elif selector == "ActionChains_video_click":
                         # 3. VERSUCH: Klick auf das 'video'-Element per ActionChains (Maus-Emulation)
                         try:
-                            log(
+                            self.logger.log(
                                 "-> Versuche Klick auf den 'video'-Selektor per ActionChains (Maus-Emulation)."
                             )
                             video_element = WebDriverWait(
@@ -565,7 +591,7 @@ class driverManager:
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
-                                log(
+                                self.logger.log(
                                     f"Video erfolgreich über ActionChains auf 'video' gestartet bei {current_time:.2f}/{duration:.2f} Sekunden."
                                 )
                                 video_started_successfully = True
@@ -582,7 +608,7 @@ class driverManager:
                                 )
                                 break  # Erfolgreich, innere Schleife beenden
                             elif paused and duration > 0:
-                                log(
+                                self.logger.log(
                                     f"Video pausiert nach ActionChains-Klick bei {current_time:.2f}/{duration:.2f}. Versuche erneuten JS-play()."
                                 )
                         except (
@@ -591,19 +617,19 @@ class driverManager:
                             ElementClickInterceptedException,
                             StaleElementReferenceException,
                         ) as e:
-                            log(
+                            self.logger.log(
                                 f"ActionChains-Klick auf 'video'-Selektor nicht möglich/gefunden: {e}",
                                 "debug",
                             )
                         except Exception as e:
-                            log(
+                            self.logger.log(
                                 f"Unerwarteter Fehler beim ActionChains-Klick auf 'video': {e}",
                                 "warning",
                             )
 
                     else:  # Normale Play-Button-Selektoren
                         try:
-                            log(f"-> Probiere Selektor: '{selector}'")
+                            self.logger.log(f"-> Probiere Selektor: '{selector}'")
                             play_button = WebDriverWait(self.driver, 3).until(
                                 EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
                             )
@@ -615,7 +641,7 @@ class driverManager:
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
-                                log(
+                                self.logger.log(
                                     f"Video erfolgreich über Selektor '{selector}' gestartet bei {current_time:.2f}/{duration:.2f} Sekunden."
                                 )
                                 video_started_successfully = True
@@ -625,7 +651,7 @@ class driverManager:
                                 video_start_selectors_prioritized.insert(0, selector)
                                 break  # Erfolgreich, innere Schleife beenden
                             elif paused and duration > 0:
-                                log(
+                                self.logger.log(
                                     f"Video ist nach Klick auf '{selector}' pausiert bei {current_time:.2f}/{duration:.2f}. Versuche JS-play()."
                                 )
                                 self.driver.execute_script(
@@ -634,7 +660,7 @@ class driverManager:
                                 time.sleep(0.5)
                                 current_time, duration, paused = self.get_current_video_progress()
                                 if duration > 0 and current_time > 0.1 and not paused:
-                                    log(
+                                    self.logger.log(
                                         f"Video per JS nach Klick auf '{selector}' erfolgreich gestartet bei {current_time:.2f}/{duration:.2f} Sekunden."
                                     )
                                     video_started_successfully = True
@@ -650,12 +676,12 @@ class driverManager:
                             ElementClickInterceptedException,
                             StaleElementReferenceException,
                         ) as e:
-                            log(
+                            self.logger.log(
                                 f"Selektor '{selector}' nicht gefunden/klickbar: {e}",
                                 "debug",
                             )
                         except Exception as e:
-                            log(
+                            self.logger.log(
                                 f"Unerwarteter Fehler beim Startversuch mit '{selector}': {e}",
                                 "warning",
                             )
@@ -664,6 +690,7 @@ class driverManager:
                         break  # Innere Schleife beenden, wenn Video gestartet
 
                 if video_started_successfully:
+                    from parsers.m3u8 import M3U8 as m3u8  # Lokaler Import, um zirkuläre Abhängigkeiten zu vermeiden
                     m3u8_manager = m3u8(self.driver, "/app/Logs/m3u8_files")
                     self.m3u8_files_dict = m3u8_manager.m3u8_files_dict
                     self.m3u8_first_filepath = m3u8_manager.m3u8_first_filepath
@@ -680,7 +707,7 @@ class driverManager:
 
         # Finaler Check und Abbruch
         if not video_started_successfully:
-            log(
+            self.logger.log(
                 "FEHLER: Video konnte nach allen Versuchen nicht gestartet werden. Abbruch des Streamings.",
                 "error",
             )
@@ -690,7 +717,7 @@ class driverManager:
                 [],
             )  # Keine Selektoren zurückgeben, da sie lokal sind
 
-        log(
+        self.logger.log(
             "Starte Überwachung der Videowiedergabe und Netzwerkanfragen bis zum Ende des Videos..."
         )
         ts_urls = set()
@@ -707,13 +734,13 @@ class driverManager:
             print(f"Aktuelle Zeit: {current_time}/{duration}", "\r")
 
             if duration > 0 and current_time >= duration - 3.0:
-                log(
+                self.logger.log(
                     f"Video fast am Ende oder beendet: {current_time:.2f}/{duration:.2f}. Beende Überwachung."
                 )
                 break
 
             if paused:
-                log(
+                self.logger.log(
                     f"Video pausiert bei {current_time:.2f}/{duration:.2f} Sekunden, versuche es zu starten."
                 )
                 self.driver.execute_script("document.querySelector('video').play();")
@@ -721,7 +748,7 @@ class driverManager:
 
             if current_time == last_current_time and current_time > 0.1:
                 if time.time() - stalled_check_time > stalled_timeout:
-                    log(
+                    self.logger.log(
                         f"Video hängt fest bei {current_time:.2f}/{duration:.2f} Sekunden seit {stalled_timeout} Sekunden. Beende Überwachung."
                     )
                     break
@@ -735,7 +762,7 @@ class driverManager:
                 and time.time() - overall_monitoring_start_time
                 > max_monitoring_time_if_duration_unknown
             ):
-                log(
+                self.logger.log(
                     f"WARNUNG: Videodauer nicht verfügbar und Überwachung läuft seit über {max_monitoring_time_if_duration_unknown/3600:.1f} Stunden. Beende Überwachung.",
                     "warning",
                 )
@@ -745,10 +772,10 @@ class driverManager:
 
             time.sleep(3)  # Pause, um Browser-Aktivität zu beobachten und Logs zu sammeln
 
-        log(f"Überwachung beendet. Insgesamt {len(ts_urls)} einzigartige TS-URLs gefunden.")
+        self.logger.log(f"Überwachung beendet. Insgesamt {len(ts_urls)} einzigartige TS-URLs gefunden.")
 
         if not ts_urls:
-            log(
+            self.logger.log(
                 "KEINE TS-URLs gefunden. Die Seite hat möglicherweise keine TS-Streams oder ein Problem ist aufgetreten.",
                 "error",
             )
@@ -803,8 +830,8 @@ class driverManager:
                 ):
                     found_urls.add(url)
         except WebDriverException as e:
-            log(f"Fehler beim Abrufen oder Leeren der Performance-Logs: {e}", "error")
+            self.logger.log(f"Fehler beim Abrufen oder Leeren der Performance-Logs: {e}", "error")
         except Exception as e:
-            log(f"Ein unerwarteter Fehler beim Extrahieren von URLs: {e}", "error")
+            self.logger.log(f"Ein unerwarteter Fehler beim Extrahieren von URLs: {e}", "error")
         return found_urls
 

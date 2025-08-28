@@ -1,3 +1,8 @@
+import os
+import re
+import requests
+from selenium.common.exceptions import WebDriverException
+from helper.wrapper.logger import Logging
 
 class M3U8:
     """
@@ -8,6 +13,7 @@ class M3U8:
     def __init__(self, driver, output_dir):
         self.output_dir = output_dir
         self.driver = driver
+        self.logger = Logging()
         # Attribute zur Speicherung der Ergebnisse
         self.m3u8_files_dict = {}
         self.m3u8_first_filepath = None
@@ -38,9 +44,9 @@ class M3U8:
                     if not (url.endswith(".m3u8") or url.endswith(".mpd")):
                         found_urls.add(url)
         except WebDriverException as e:
-            log(f"Fehler beim Abrufen oder Leeren der Performance-Logs: {e}", "error")
+            self.logger.log(f"Fehler beim Abrufen oder Leeren der Performance-Logs: {e}", "error")
         except Exception as e:
-            log(f"Ein unerwarteter Fehler beim Extrahieren von URLs: {e}", "error")
+            self.logger.log(f"Ein unerwarteter Fehler beim Extrahieren von URLs: {e}", "error")
         return found_urls
 
     def find_m3u8_urls(self):
@@ -55,7 +61,7 @@ class M3U8:
                 m3u8_urls.add(url)
 
         if not m3u8_urls:
-            log("Es wurden keine passenden M3U8-URLs gefunden.", "warning")
+            self.logger.log("Es wurden keine passenden M3U8-URLs gefunden.", "warning")
 
         self.m3u8_files_dict, self.m3u8_first_filepath = self.save_m3u8_files_locally(m3u8_urls)
 
@@ -67,7 +73,7 @@ class M3U8:
         local_m3u8_paths = {}
         first_filepath = None
         os.makedirs(self.output_dir, exist_ok=True)
-        log(f"Speichere M3U8-Dateien im Ordner '{self.output_dir}'...")
+        self.logger.log(f"Speichere M3U8-Dateien im Ordner '{self.output_dir}'...")
 
         for i, m3u8_url in enumerate(m3u8_urls):
             try:
@@ -87,8 +93,8 @@ class M3U8:
                 if first_filepath is None:
                     first_filepath = filepath
 
-                log(f"M3U8-Datei erfolgreich gespeichert als '{filepath}'")
+                self.logger.log(f"M3U8-Datei erfolgreich gespeichert als '{filepath}'")
             except requests.exceptions.RequestException as e:
-                log(f"Fehler beim Herunterladen des M3u8-Inhalts von {m3u8_url}: {e}", "error")
+                self.logger.log(f"Fehler beim Herunterladen des M3u8-Inhalts von {m3u8_url}: {e}", "error")
 
         return local_m3u8_paths, first_filepath
