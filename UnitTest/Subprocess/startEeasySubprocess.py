@@ -7,29 +7,7 @@ import sys
 semaphore = asyncio.Semaphore(4)  # Limit concurrent tasks to 4
 
 
-def load_json_data(filename):
-    print("Loading JSON data...")
-    with open(filename, 'r') as file:
-        data = json.load(file)
-    print("JSON data loaded successfully.")
-    return data
 
-async def get_series_data(serien):
-    for serie in serien:
-        # Serien Title
-        title = serie["series_name"]
-        for season in serie["seasons"]:
-            # all Seasons
-            season_number = season["season_number"]
-            for episode in season["episode_links"]:
-                # all Episodes
-                episode_links = episode
-                #await asyncio.sleep(random.uniform(2,5))  # Simulate processing time
-                yield {
-                    "title": title,
-                    "season_number": season_number,
-                    "episode_links": episode_links
-                }
 
 async def create_task(agent_name, data):
     print(

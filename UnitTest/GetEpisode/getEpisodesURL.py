@@ -5,7 +5,7 @@ import logging
 import asyncio # Für asynchrone Programmierung
 import aiohttp # Für asynchrone HTTP-Anfragen
 from bs4 import BeautifulSoup
-from lxml import etree # Import für XPath-Unterstützung
+from lxml import etree # Ensure this import is present
 import time
 import re # Für reguläre Ausdrücke zur Staffelnummer-Extraktion
 from typing import Union # Hinzugefügt für Union-Typ-Hinweis
@@ -180,7 +180,7 @@ async def get_series_structure_async(session: aiohttp.ClientSession, url: str, s
 
         for li in all_li_elements:
             a_tag = li.find('a')
-            if a_tag and a_tag.get('href'):
+            if a_tag and hasattr(a_tag, 'get'):
                 href = a_tag.get('href')
                 if "/staffel-" in href:
                     # Versuchen, die Staffelnummer aus dem Text oder dem href zu extrahieren
@@ -517,10 +517,11 @@ async def get_episode_url_per_season(serien_Name: str, season: int, current_seri
             episode_num = (result.get('episode_number') if isinstance(result, dict) else None) or (i + 1)
             
             if isinstance(result, Exception):
+                # Do not treat as dict/list, just log or handle
                 logging.error(f"Fehler bei Episode {episode_num} von Staffel {season} für {serien_Name}: {result}")
                 failed_fetches += 1
                 # Fehlerdetails werden bereits in fetch_stream_links_async hinzugefügt
-            elif result and (result["primary_link"] or result["vidoza_link"] or result["voe_link"]):
+            elif isinstance(result, dict) and (result.get("primary_link") or result.get("vidoza_link") or result.get("voe_link")):
                 # Füge die episode_number hinzu, die wir in der JSON-Struktur benötigen
                 result['episode_number'] = episode_num # Stellen Sie sicher, dass die Episodennummer im Ergebnis enthalten ist
                 temp_episode_results.append(result)
@@ -673,7 +674,7 @@ async def get_movie_collection_details_async(serien_Name: str, movie_collection_
                         "url": full_movie_url,
                         "error": str(result)
                     })
-                elif result and (result["primary_link"] or result["vidoza_link"] or result["voe_link"]):
+                elif isinstance(result, dict) and (result["primary_link"] or result["vidoza_link"] or result["voe_link"]):
                     temp_movie_results.append({
                         "movie_title": movie_title,
                         "movie_url": full_movie_url,

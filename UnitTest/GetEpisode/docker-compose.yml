@@ -27,39 +27,39 @@ services:
   #    - 172.21.0.100
 
   # Pi-hole DNS-Server
-  pihole02:
-    image: pihole/pihole:latest
-    platform: linux/arm64
-    container_name: pihole02
-    hostname: pihole02
-    ports:
-      - "5353:53/tcp" # DNS
-      - "5353:53/udp" # DNS
-      - "8081:80/tcp" # Webinterface
-    environment:
-      TZ: 'Europe/Berlin'
-      WEBPASSWORD: '0487146094jJ!!'
-      DNSMASQ_LISTENING: all
-      PIHOLE_DNS_: 8.8.8.8;8.8.4.4 # Korrigiert von pihole02_DNS_ zu PIHOLE_DNS_
-      PIHOLE_ADLISTS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts https://mirror1.malwaredomains.com/files/justdomains https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt"
-    volumes:
-      # Hier sollte ein Volume-Mapping für persistente Pi-hole-Konfigurationen sein,
-      # z.B. - ./docker/PiHole/pihole:/etc/pihole
-      # und - ./docker/PiHole/dnsmasq.d:/etc/dnsmasq.d
-      # Dein aktuelles Mapping für adlists.list ist in Ordnung, aber das könnte erweitert werden.
-      - ./docker/PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
-    cap_add:
-      - NET_ADMIN
-    networks:
-      pihole02_network:
-        ipv4_address: 172.21.0.100 # Feste IP-Adresse für Pi-hole im Netzwerk
-    restart: unless-stopped
-    healthcheck: # Überprüft die Verfügbarkeit von Pi-hole
-      test: ["CMD", "curl", "-f", "http://localhost/admin"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+  #pihole02:
+  #  image: pihole/pihole:latest
+  #  platform: linux/arm64
+  #  container_name: pihole02
+  #  hostname: pihole02
+  #  ports:
+  #    - "5353:53/tcp" # DNS
+  #    - "5353:53/udp" # DNS
+  #    - "8081:80/tcp" # Webinterface
+  #  environment:
+  #    TZ: 'Europe/Berlin'
+  #    WEBPASSWORD: '0487146094jJ!!'
+  #    DNSMASQ_LISTENING: all
+  #    PIHOLE_DNS_: 8.8.8.8;8.8.4.4 # Korrigiert von pihole02_DNS_ zu PIHOLE_DNS_
+  #    PIHOLE_ADLISTS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts https://mirror1.malwaredomains.com/files/justdomains https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt"
+  #  volumes:
+  #    # Hier sollte ein Volume-Mapping für persistente Pi-hole-Konfigurationen sein,
+  #    # z.B. - ./docker/PiHole/pihole:/etc/pihole
+  #    # und - ./docker/PiHole/dnsmasq.d:/etc/dnsmasq.d
+  #    # Dein aktuelles Mapping für adlists.list ist in Ordnung, aber das könnte erweitert werden.
+  #    - ./docker/PiHole/adlists.list:/etc/pihole/adlists.list # Optional: eigene Adlist-Datei
+  #  cap_add:
+  #    - NET_ADMIN
+  #  networks:
+  #    pihole02_network:
+  #      ipv4_address: 172.21.0.100 # Feste IP-Adresse für Pi-hole im Netzwerk
+  #  restart: unless-stopped
+  #  healthcheck: # Überprüft die Verfügbarkeit von Pi-hole
+  #    test: ["CMD", "curl", "-f", "http://localhost/admin"]
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 5
+  #    start_period: 20s
 
   episodnemanager:
     build:
@@ -75,13 +75,13 @@ services:
     command: python /app/getEpisodesURL.py
     networks:
       - pihole02_network # <-- HINZUGEFÜGT: Der Episodenmanager muss im selben Netzwerk sein
-    dns:
-      - 172.21.0.100 # <-- HINZUGEFÜGT: Nutzt Pi-hole für DNS-Auflösung
+    #dns:
+    #  - 172.21.0.100 # <-- HINZUGEFÜGT: Nutzt Pi-hole für DNS-Auflösung
     depends_on: # <-- HINZUGEFÜGT: Stellt sicher, dass Selenium und Pi-hole bereit sind
       #selenium-chromium:
       #  condition: service_healthy
-      pihole02:
-        condition: service_healthy
+      #pihole02:
+      #  condition: service_healthy
 
 # Definition der Netzwerke
 networks:

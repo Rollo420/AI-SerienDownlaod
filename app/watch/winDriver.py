@@ -12,9 +12,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.common.exceptions import (
     TimeoutException,
     NoSuchElementException,
@@ -68,38 +68,36 @@ class driverManager:
         
         
     def initialize_driver(self):
-        options = Options()
+        options = Options() # This is now Firefox Options
         if self.headless:
-            log("Starte Chromium im Headless-Modus (im Docker-Container)...")
-            options.add_argument("--headless=new")
+            log("Starte Firefox im Headless-Modus...")
+            # The new headless argument for Firefox is "-headless"
+            options.add_argument("-headless") 
         else:
-            log("Starte Chromium im sichtbaren Modus (im Docker-Container via VNC)...")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--remote-debugging-port=9222") 
+            log("Starte Firefox im sichtbaren Modus...")
+
+        # These arguments are generally safe for both
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--disable-gpu")
         options.add_argument("--ignore-certificate-errors")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option("useAutomationExtension", False)
-        #options.binary_location = "/snap/bin/chromium"
 
-        # Adblock Plus Extension laden (Pfad im Container anpassen!)
-        adblock_path = "/app/src/adblockplus.crx"
-        if os.path.exists(adblock_path):
-            options.add_extension(adblock_path)
+        # --- REMOVE THESE CHROME-ONLY LINES ---
+        # options.add_argument("--disable-blink-features=AutomationControlled")
+        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # options.add_experimental_option("useAutomationExtension", False)
+        
+        # Adblock for Firefox uses a different format (.xpi), not .crx
+        # You would need to download the .xpi file for Adblock Plus
+        # adblock_path = "/path/to/adblock.xpi"
+        # if os.path.exists(adblock_path):
+        #     self.driver.install_addon(adblock_path, temporary=True)
+
         try:
-            selenium_hub_url = os.getenv(
-                "SELENIUM_HUB_URL", "http://selenium-chromium:4444/wd/hub"
+            log(f"Firefox WebDriver wird initialisiert...")
+            return webdriver.Firefox(
+                service=Service(GeckoDriverManager().install()),
+                options=options
             )
-             
-            log(f"Chromium WebDriver erfolgreich mit {selenium_hub_url} verbunden.")
-            return webdriver.Chrome(
-    service=Service(ChromeDriverManager().install()),
-    options=options
-)
         except WebDriverException as e:
             log(f"FEHLER beim Initialisieren des WebDriver: {e}", "error")
             sys.exit(1)
@@ -779,9 +777,40 @@ class driverManager:
         )  # Keine Selektoren zurückgeben, da sie lokal sind
 
 
+def load_json_data(filename):
+    print("Loading JSON data...")
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    print("JSON data loaded successfully.")
+    return data
+
+def get_series_data(serien):
+    for serie in serien:
+        # Serien Title
+        title = serie["series_name"]
+        for season in serie["seasons"]:
+            # all Seasons
+            season_number = season["season_number"]
+            for episode in season["episode_links"]:
+                # all Episodes
+                episode_links = episode
+                #await asyncio.sleep(random.uniform(2,5))  # Simulate processing time
+                yield {
+                    "title": title,
+                    "season_number": season_number,
+                    "episode_links": episode_links
+                }
 
 if __name__ == "__main__":
+    # Make sure to activate your virtual environment before running this script:
+    #   Windows: .venv\Scripts\activate
+    #   Linux/Mac: source .venv/bin/activate
+
+    filename = "all_series_data.json"  # Or whatever your JSON filename is
     
-    driver = driverManager()
-    
-    driver.stream_episode("https://s.to/redirect/19457176")
+    driver = driverManager(headless=False)
+
+    serienLinks = ["http://186.2.175.5/redirect/19261258", "http://186.2.175.5/redirect/19503708", "http://186.2.175.5/redirect/19466473", "http://186.2.175.5/serie/stream/the-last-of-us/staffel-2/episode-7"]
+
+    for link in serienLinks:
+        driver.stream_episode(link)
