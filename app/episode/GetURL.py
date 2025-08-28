@@ -10,7 +10,7 @@ import time
 import re # Für reguläre Ausdrücke zur Staffelnummer-Extraktion
 from typing import Union # Hinzugefügt für Union-Typ-Hinweis
 
-os.makedirs("/storage/Log", exist_ok=True)
+os.makedirs("app/storage/Log", exist_ok=True)
 
 # --- Globale Konfigurationen und Konstanten ---
 # Konfigurieren des Loggings
@@ -18,7 +18,7 @@ logging.basicConfig(
     level=logging.INFO, # Setzt den Logging-Level auf INFO für übersichtliche Ausgaben. Ändern Sie dies zu logging.DEBUG, um aktive Anfragen zu sehen.
     format='%(asctime)s - %(threadName)s - %(levelname)s - %(message)s',
     handlers=[
-    logging.FileHandler("/storage/Log/series_scraper.log"), # Protokolliert in eine Datei
+    logging.FileHandler("app/storage/Log/series_scraper.log"), # Protokolliert in eine Datei
         logging.StreamHandler(sys.stdout)          # Protokolliert auf die Konsole
     ]
 )

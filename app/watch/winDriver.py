@@ -86,6 +86,7 @@ class driverManager:
         options.add_experimental_option("useAutomationExtension", False)
         #options.binary_location = "/snap/bin/chromium"
         # Entferne: options.add_argument("--start-fullscreen")
+        options.add_argument("start-maximized")
 
         # Adblock Plus Extension laden (Pfad im Container anpassen!)
         adblock_path = "/app/src/adblockplus.crx"
@@ -106,7 +107,7 @@ class driverManager:
             sys.exit(1)
 
 
-    def handle_new_tabs_and_focus(self, main_window_handle: str):
+    def handle_new_tabs_and_focus(self):
         """
         Überprüft und schließt alle neuen Browser-Tabs (Pop-ups) und kehrt zum Haupt-Tab zurück.
         """
@@ -117,7 +118,7 @@ class driverManager:
                     f"NEUE FENSTER/TABS ERKANNT: {len(handles) - 1} Pop-up(s). Schließe diese..."
                 )
                 for handle in handles:
-                    if handle != main_window_handle:
+                    if handle != self.main_window_handle:
                         try:
                             self.driver.switch_to.window(handle)
                             self.driver.close()
@@ -127,7 +128,7 @@ class driverManager:
                                 f"WARNUNG: Konnte Pop-up-Tab '{handle}' nicht schließen: {e}",
                                 "warning",
                             )
-                self.driver.switch_to.window(main_window_handle)  # Zurück zum Haupt-Tab
+                self.driver.switch_to.window(self.main_window_handle)  # Zurück zum Haupt-Tab
                 time.sleep(1)  # Kurze Pause nach dem Schließen
         except Exception as e:
             log(f"FEHLER: Probleme beim Verwalten von Browser-Fenstern: {e}", "error")
@@ -404,7 +405,7 @@ class driverManager:
                     log(f"Fehler beim Bearbeiten eines iframe: {e}", "warning")
 
             # Sicherstellen, dass keine neuen Tabs geöffnet wurden
-            self.handle_new_tabs_and_focus(self.main_window_handle)
+            self.handle_new_tabs_and_focus()
 
         except Exception as e:
             log(f"FEHLER beim Entfernen von Overlays und iframes: {e}", "error")
@@ -434,38 +435,12 @@ class driverManager:
         
         log(f"\nNavigiere zu: {url}")
         self.driver.get(url)
-        main_window_handle = self.driver.current_window_handle
+        self.main_window_handle = self.driver.current_window_handle
 
-        # Setze das Video auf "faux fullscreen" (wie Taste 'f', nicht F11)
-        try:
-            self.driver.execute_script("""
-                var video = document.querySelector('video');
-                if (video) {
-                    video.style.position = 'fixed';
-                    video.style.top = '0';
-                    video.style.left = '0';
-                    video.style.width = '100vw';
-                    video.style.height = '100vh';
-                    video.style.zIndex = '9999';
-                    video.style.backgroundColor = 'black';
-                    video.style.margin = '0';
-                    video.style.padding = '0';
-                    document.body.style.margin = '0';
-                    document.body.style.overflow = 'hidden';
-                }
-            """)
-            log("Video auf Fenstergröße maximiert (faux fullscreen, wie Taste 'f').")
-        except Exception as e:
-            log(f"Faux-Fullscreen-JavaScript konnte nicht ausgeführt werden: {e}", "warning")
-        # ...existing code...
         WebDriverWait(self.driver, DEFAULT_TIMEOUT).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
         log("Seite geladen. Suche nach Popups und Overlays...")
-        # close_overlays_and_iframes muss ebenfalls Zugriff auf seine eigene Lernvariable haben
-        # oder diese als Parameter übergeben bekommen und zurückgeben.
-        # Für diese Funktion gehen wir davon aus, dass close_overlays_and_iframes entweder globalen Zustand verwaltet
-        # oder keine Lernfunktion benötigt.
         self.close_overlays_and_iframes()
 
         episode_title = self.get_episode_title()
@@ -479,7 +454,6 @@ class driverManager:
         max_startup_duration = 60  # Maximale Zeit (Sekunden) für den Startversuch
         start_time_attempt = time.time()
 
-        # Anzahl der Wiederholungen pro Selektor-Versuch
         num_attempts_per_selector = 3
 
         while not video_started_successfully and (
@@ -519,9 +493,17 @@ class driverManager:
                                 } else {
                                     console.log('No <video> element found for JS play() in this attempt.');
                                 }
-                            """
+                                """
                             )
-                            time.sleep(0.5)  # Kurze Pause, um JS-Effekte abzuwarten
+                            self.handle_new_tabs_and_focus()  # Tabs sofort schließen
+                            # Fullscreen direkt nach JS-Play versuchen
+                            try:
+                                video_element = self.driver.find_element(By.CSS_SELECTOR, "video")
+                                self.driver.execute_script("arguments[0].requestFullscreen();", video_element)
+                                log("requestFullscreen() nach JS-Play ausgeführt.")
+                            except Exception as e:
+                                log(f"requestFullscreen nach JS-Play konnte nicht ausgeführt werden: {e}", "warning")
+                            time.sleep(0.5)
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
@@ -547,11 +529,18 @@ class driverManager:
                         # 2. VERSUCH: Klick auf das 'video'-Element (falls es anklickbar wird)
                         try:
                             log("-> Versuche Klick auf den 'video'-Selektor.")
-                            video_element = WebDriverWait(self.driver, 2).until(  # Kurzer Timeout für diesen Versuch
+                            video_element = WebDriverWait(self.driver, 2).until(
                                 EC.element_to_be_clickable((By.CSS_SELECTOR, "video"))
                             )
                             self.driver.execute_script("arguments[0].click();", video_element)
-                            time.sleep(0.5)  # Kurze Pause nach Klick
+                            self.handle_new_tabs_and_focus()  # Tabs sofort schließen
+                            # Fullscreen direkt nach Klick versuchen
+                            try:
+                                self.driver.execute_script("arguments[0].requestFullscreen();", video_element)
+                                log("requestFullscreen() nach Video-Klick ausgeführt.")
+                            except Exception as e:
+                                log(f"requestFullscreen nach Video-Klick konnte nicht ausgeführt werden: {e}", "warning")
+                            time.sleep(0.5)
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
@@ -591,12 +580,19 @@ class driverManager:
                             )
                             video_element = WebDriverWait(
                                 self.driver, 2
-                            ).until(  # Kurzer Timeout für diesen Versuch
+                            ).until(
                                 EC.element_to_be_clickable((By.CSS_SELECTOR, "video"))
                             )
                             action = ActionChains(self.driver)
                             action.move_to_element(video_element).click().perform()
-                            time.sleep(0.5)  # Kurze Pause nach Klick
+                            self.handle_new_tabs_and_focus()  # Tabs sofort schließen
+                            # Fullscreen direkt nach ActionChains-Klick versuchen
+                            try:
+                                self.driver.execute_script("arguments[0].requestFullscreen();", video_element)
+                                log("requestFullscreen() nach ActionChains-Klick ausgeführt.")
+                            except Exception as e:
+                                log(f"requestFullscreen nach ActionChains-Klick konnte nicht ausgeführt werden: {e}", "warning")
+                            time.sleep(0.5)
 
                             current_time, duration, paused = self.get_current_video_progress()
                             if duration > 0 and current_time > 0.1 and not paused:
@@ -644,6 +640,14 @@ class driverManager:
                             )
 
                             self.driver.execute_script("arguments[0].click();", play_button)
+                            self.handle_new_tabs_and_focus()  # Tabs sofort schließen
+                            # Fullscreen direkt nach Play-Button-Klick versuchen
+                            try:
+                                video_element = self.driver.find_element(By.CSS_SELECTOR, "video")
+                                self.driver.execute_script("arguments[0].requestFullscreen();", video_element)
+                                log("requestFullscreen() nach Play-Button-Klick ausgeführt.")
+                            except Exception as e:
+                                log(f"requestFullscreen nach Play-Button-Klick konnte nicht ausgeführt werden: {e}", "warning")
                             time.sleep(0.5)
 
                             self.close_overlays_and_iframes() # Nach Klick Popups erneut schließen (kann hier weggelassen werden, da es in der Hauptschleife passiert)
@@ -696,6 +700,8 @@ class driverManager:
                             )
 
                     if video_started_successfully:
+                        # Nach erfolgreichem Videostart: Fullscreen-Button per XPath klicken
+                        
                         break  # Innere Schleife beenden, wenn Video gestartet
 
                 if video_started_successfully:
@@ -703,6 +709,18 @@ class driverManager:
                     #self.m3u8_files_dict = m3u8_manager.m3u8_files_dict
                     #self.m3u8_first_filepath = m3u8_manager.m3u8_first_filepath
                     
+                    try:
+                        fullscreen_btn = self.driver.find_element(
+                            By.XPATH,
+                            "/html/body/div/div/div[1]/div[2]/div[12]/div[4]/div/div[17]"
+                        )
+                        self.driver.execute_script("arguments[0].click();", fullscreen_btn)
+                        log("Fullscreen-Button per XPath geklickt.")
+                        print("Fullscreen-Button per XPath geklickt.")
+                    except Exception as e:
+                        log(f"Fullscreen-Button konnte nicht geklickt werden: {e}", "warning")
+                        print(f"Fullscreen-Button konnte nicht geklickt werden: {e}", "warning")
+                        
                     break  # Äußere Schleife beenden, wenn Video gestartet
 
             # Bereinigung nach jedem Schleifendurchlauf der Selektoren
@@ -830,7 +848,7 @@ if __name__ == "__main__":
     # Variable: Soll der Driver wiederverwendet werden?
     reuse_driver = True  # Auf False setzen, um für jede Episode einen neuen Driver zu verwenden
 
-    serien = load_json_data(r'C:\Projekte\Python\AI-SerienDownlaod\app\watch\all_series_data.json')
+    serien = load_json_data(r'.\app\storage\Serien\all_series_data.json')
 
     driver = None
     for serie in get_series_data(serien):
